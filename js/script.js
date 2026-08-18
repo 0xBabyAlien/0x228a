@@ -83,6 +83,9 @@
       const inp = document.getElementById('term-input');
       setTimeout(()=>inp.focus(), 30);
     }
+    if(id === 'whale'){
+      startWhaleRadar();
+    }
   }
   function centerWindow(w){
     const width = w.offsetWidth;
@@ -342,5 +345,69 @@
     container.dataset.rendered = '1';
   }
   renderExchanges();
+
+
+  /* ---------- WHALE RADAR ---------- */
+  const WHALE_ENDPOINT = '/api/whale-radar';
+  const WHALE_POLL_MS = 25000;
+  let whaleStarted = false;
+  let whalePollTimer = null;
+
+  function escHtml(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function renderWhaleRows(transfers){
+    const list = document.getElementById('whale-list');
+    if(!transfers || transfers.length === 0){
+      list.innerHTML = '<div class="whale-empty">No large transfers found in the latest blocks.</div>';
+      return;
+    }
+    list.innerHTML = transfers.map(t => (
+      '<div class="whale-row">'
+        + '<span class="whale-symbol">' + escHtml(t.symbol) + '</span>'
+        + '<span class="whale-value">' + escHtml(t.valueFormatted) + '</span>'
+        + '<span class="whale-addrs">'
+          + '<a href="https://etherscan.io/address/' + t.from + '" target="_blank" rel="noopener">' + escHtml(t.fromShort) + '</a>'
+          + ' → '
+          + '<a href="https://etherscan.io/address/' + t.to + '" target="_blank" rel="noopener">' + escHtml(t.toShort) + '</a>'
+        + '</span>'
+        + '<span class="whale-age">' + escHtml(t.age) + '</span>'
+      + '</div>'
+    )).join('');
+  }
+
+  async function loadWhaleData(){
+    const dot = document.getElementById('whale-dot');
+    const status = document.getElementById('whale-status');
+    try{
+      const res = await fetch(WHALE_ENDPOINT);
+      const data = await res.json();
+      if(!res.ok || data.error){
+        throw new Error(data.error || ('HTTP ' + res.status));
+      }
+      dot.classList.remove('error');
+      status.textContent = data.count + ' transfer(s) ≥ $' + data.minUsd.toLocaleString('en-US')
+        + ' in the last 10 blocks · updated ' + new Date(data.updatedAt).toLocaleTimeString();
+      renderWhaleRows(data.transfers);
+    } catch(err){
+      dot.classList.add('error');
+      status.textContent = 'Unable to reach Whale Radar API.';
+      document.getElementById('whale-list').innerHTML =
+        '<div class="whale-empty">Could not load data. This window needs the site deployed with '
+        + '<span class="dim">/api/whale-radar</span> and an <span class="dim">ALCHEMY_API_KEY</span> configured '
+        + '— it will not work when the file is opened locally.</div>';
+    }
+  }
+
+  function startWhaleRadar(){
+    if(whaleStarted) { loadWhaleData(); return; }
+    whaleStarted = true;
+    loadWhaleData();
+    whalePollTimer = setInterval(loadWhaleData, WHALE_POLL_MS);
+  }
+
+  const whaleRefreshBtn = document.getElementById('whale-refresh');
+  if(whaleRefreshBtn) whaleRefreshBtn.addEventListener('click', loadWhaleData);
 
 })();
