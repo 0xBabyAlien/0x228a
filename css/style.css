@@ -199,6 +199,29 @@
   .about-body td{padding:5px 0;border-bottom:1px solid #ffffff0c;}
   .about-body td:first-child{color:var(--subtext);width:110px;}
 
+  /* Exchange.app — namespaced so it never clashes with other windows */
+  .exchange-body{padding:16px 18px 22px;}
+  .exchange-body h2{
+    margin:0 0 14px;font-size:13px;letter-spacing:.4px;color:var(--subtext);
+    text-transform:uppercase;font-weight:600;
+  }
+  .exchange-body .exchange-item{margin-bottom:16px;}
+  .exchange-body .exchange-link{
+    display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);
+  }
+  .exchange-body .exchange-link::before{content:"•";font-size:16px;color:var(--mauve);}
+  .exchange-body .exchange-icon{
+    width:22px;height:22px;object-fit:contain;border-radius:50%;
+    background:var(--surface2);flex:0 0 auto;
+  }
+  .exchange-body .exchange-link h3{
+    margin:0;font-size:13.5px;font-weight:600;color:var(--text);transition:color .12s ease;
+  }
+  .exchange-body .exchange-link:hover h3{color:var(--teal);}
+  .exchange-body .exchange-description{
+    margin:4px 0 0 30px;max-width:400px;line-height:1.45;font-size:12px;color:var(--subtext);
+  }
+
   /* Context menu */
   #ctxmenu{
     position:absolute;background:var(--surface0);border:1px solid #ffffff16;
