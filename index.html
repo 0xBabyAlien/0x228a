@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>0xbabyalien@arch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="stage">
+  <div id="monitor">
+    <div id="screen-wrap">
+      <div id="desktop">
+        <div id="wallpaper"></div>
+
+        <!-- TOPBAR -->
+        <div id="topbar">
+          <div id="workspaces">
+            <div class="ws active" data-ws="1">1</div>
+            <div class="ws" data-ws="2">2</div>
+            <div class="ws" data-ws="3">3</div>
+            <div class="ws" data-ws="4">4</div>
+            <div class="ws" data-ws="5">5</div>
+          </div>
+          <div id="clock">--:--</div>
+          <div id="tray">
+            <span title="Wi-Fi"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M2 8.5a16 16 0 0 1 20 0"/><path d="M5 12a11 11 0 0 1 14 0"/><path d="M8.5 15.5a6 6 0 0 1 7 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg></span>
+            <span title="Volume"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 8a5 5 0 0 1 0 8"/></svg> 72%</span>
+            <span title="Battery"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 10v4"/></svg> 87%</span>
+            <span id="powerbtn" title="Power menu"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><path d="M12 2v8"/><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/></svg></span>
+          </div>
+          <div id="powermenu">
+            <button id="btn-lock">🔒 Lock Screen</button>
+            <button id="btn-wall">🖼 Change Wallpaper</button>
+            <button id="btn-about-menu">ℹ About System</button>
+          </div>
+        </div>
+
+        <!-- DESKTOP ICONS -->
+        <div id="icons">
+          <div class="icon" tabindex="0" data-open="files">
+            <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linejoin="round"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>
+            <span>Files</span>
+          </div>
+          <div class="icon" tabindex="0" data-open="terminal">
+            <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3"/><path d="M13 15h4"/></svg>
+            <span>Terminal</span>
+          </div>
+          <div class="icon" tabindex="0" data-open="editor">
+            <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+            <span>readme.md</span>
+          </div>
+          <div class="icon" tabindex="0" data-open="about">
+            <svg viewBox="0 0 24 24" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.6" fill="currentColor"/></svg>
+            <span>About PC</span>
+          </div>
+          <div class="icon" tabindex="0" data-action="trash">
+            <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg>
+            <span>Trash</span>
+          </div>
+        </div>
+
+        <!-- WINDOWS LAYER -->
+        <div id="windows-layer">
+
+          <!-- TERMINAL -->
+          <div class="window" id="win-terminal" style="left:180px;top:90px;width:560px;height:360px;display:none;">
+            <div class="titlebar" data-win="terminal">
+              <button class="tbtn close" data-act="close"></button>
+              <button class="tbtn min" data-act="min"></button>
+              <button class="tbtn max" data-act="max"></button>
+              <div class="wtitle">0xbabyalien@arch: ~</div>
+            </div>
+            <div class="wbody">
+              <div class="term-body">
+                <div class="term-out" id="term-out"></div>
+                <div class="term-in">
+                  <span>0xbabyalien@arch ~ %</span>
+                  <input id="term-input" autocomplete="off" spellcheck="false">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FILES -->
+          <div class="window" id="win-files" style="left:640px;top:70px;width:420px;height:300px;display:none;">
+            <div class="titlebar" data-win="files">
+              <button class="tbtn close" data-act="close"></button>
+              <button class="tbtn min" data-act="min"></button>
+              <button class="tbtn max" data-act="max"></button>
+              <div class="wtitle">Files — /home/0xbabyalien</div>
+            </div>
+            <div class="wbody">
+              <div class="files-body">
+                <div class="fitem" data-open="editor">
+                  <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linejoin="round"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>
+                  <span>Projects</span>
+                </div>
+                <div class="fitem" data-open="editor">
+                  <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+                  <span>readme.md</span>
+                </div>
+                <div class="fitem" data-toast="Empty for now.">
+                  <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/></svg>
+                  <span>contact.txt</span>
+                </div>
+                <div class="fitem" data-open="files">
+                  <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linejoin="round"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>
+                  <span>wallpapers</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- EDITOR -->
+          <div class="window" id="win-editor" style="left:260px;top:150px;width:480px;height:380px;display:none;">
+            <div class="titlebar" data-win="editor">
+              <button class="tbtn close" data-act="close"></button>
+              <button class="tbtn min" data-act="min"></button>
+              <button class="tbtn max" data-act="max"></button>
+              <div class="wtitle">readme.md — Editor</div>
+            </div>
+            <div class="wbody">
+              <div class="editor-toolbar">The text below can be edited directly (changes are not saved after refresh)</div>
+              <div class="editor-body" contenteditable="true"># 0xbabyalien
+
+Hey! This is a personal page themed like a Linux desktop.
+Try clicking the icons on the screen, opening the Terminal,
+or right-clicking the desktop to change the wallpaper.
+
+## About
+- Into on-chain research & smart contract exploration
+- Ricing Linux setups (Hyprland, Catppuccin)
+- Building small web3 projects & tooling
+
+## Contact
+- X / Twitter: @0xbabyalien
+- GitHub: github.com/0xbabyalien
+
+Edit this text however you like to turn it into your
+own profile page.</div>
+            </div>
+          </div>
+
+          <!-- ABOUT -->
+          <div class="window" id="win-about" style="left:420px;top:110px;width:380px;height:320px;display:none;">
+            <div class="titlebar" data-win="about">
+              <button class="tbtn close" data-act="close"></button>
+              <button class="tbtn min" data-act="min"></button>
+              <button class="tbtn max" data-act="max"></button>
+              <div class="wtitle">About This PC</div>
+            </div>
+            <div class="wbody">
+              <div class="about-body">
+                <div class="about-head">
+                  <div class="avatar">0x</div>
+                  <div>
+                    <div style="font-weight:600;">0xbabyalien</div>
+                    <div style="color:var(--subtext);font-size:12px;">0xOS 1.0 &middot; Arch-based</div>
+                  </div>
+                </div>
+                <table>
+                  <tr><td>Host</td><td>arch-desktop</td></tr>
+                  <tr><td>Kernel</td><td>6.9.4-arch1</td></tr>
+                  <tr><td>Shell</td><td>zsh 5.9</td></tr>
+                  <tr><td>WM</td><td>Hyprland</td></tr>
+                  <tr><td>Theme</td><td>Catppuccin Mocha (custom)</td></tr>
+                  <tr><td>Resolution</td><td>1440 × 900 (virtual)</td></tr>
+                  <tr><td>Uptime</td><td id="uptime-val">0 sec</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- DOCK -->
+        <div id="dock">
+          <div class="dock-item" data-open="terminal" title="Terminal">
+            <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3"/><path d="M13 15h4"/></svg>
+          </div>
+          <div class="dock-item" data-open="files" title="Files">
+            <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round"><path d="M3 7a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/></svg>
+          </div>
+          <div class="dock-item" data-open="editor" title="Editor">
+            <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/><path d="M9 13h6M9 17h6"/></svg>
+          </div>
+          <div class="dock-item" data-open="about" title="About">
+            <svg viewBox="0 0 24 24" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.6" fill="currentColor"/></svg>
+          </div>
+          <div class="dock-item" id="dock-lock" title="Lock screen">
+            <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          </div>
+        </div>
+
+        <!-- CONTEXT MENU -->
+        <div id="ctxmenu">
+          <button id="ctx-wall">🖼 Change Wallpaper</button>
+          <button id="ctx-icons">🗂 Arrange Icons</button>
+          <hr>
+          <button id="ctx-about">ℹ About System</button>
+        </div>
+
+        <!-- TOAST -->
+        <div id="toast"></div>
+
+        <!-- LOCK SCREEN -->
+        <div id="lockscreen">
+          <div id="lock-time">--:--</div>
+          <div id="lock-date">-</div>
+          <div id="lock-hint">click / tap anywhere to unlock</div>
+        </div>
+
+        <div id="vignette"></div>
+      </div>
+    </div>
+  </div>
+  <div id="hint">this view looks identical on every device — phone, tablet, or PC</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
