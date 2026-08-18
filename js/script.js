@@ -290,4 +290,48 @@
   document.getElementById('ctx-icons').addEventListener('click', ()=>{ ctx.classList.remove('show'); toast('Icons are already tidy.'); });
   document.getElementById('ctx-about').addEventListener('click', ()=>{ ctx.classList.remove('show'); openWindow('about'); });
 
+
+  /* ---------- EXCHANGE.APP ---------- */
+  const EXCHANGES = [
+    { name: "Binance", url: "https://www.bmwweb.biz/activity/referral-entry/CPA?ref=CPA_0090JQX9TW", icon: "https://assets.coingecko.com/markets/images/52/large/binance.jpg?1706864274", desc: "One of the world's largest crypto exchanges, offering spot trading, futures, and a wide range of digital assets." },
+    { name: "Coinbase", url: "https://www.coinbase.com/", icon: "https://assets.coingecko.com/markets/images/23/large/Coinbase_Coin_Primary.png?1706864258", desc: "A major U.S.-based crypto platform known for its simple interface, security focus, and beginner-friendly experience." },
+    { name: "OKX", url: "https://okx.ac/join/14970201", icon: "https://assets.coingecko.com/markets/images/96/large/WeChat_Image_20220117220452.png?1706864283", desc: "A global crypto exchange offering spot, derivatives, Web3 tools, and a broad range of trading products." },
+    { name: "Bybit", url: "https://www.bybitglobal.com/invite?ref=K7LWKX", icon: "https://assets.coingecko.com/markets/images/698/large/bybit_spot.png?1706864649", desc: "A global trading platform popular for derivatives, spot markets, copy trading, and advanced trading features." },
+    { name: "KuCoin", url: "https://www.kucoin.com/r/rf/QBS1MW4T", icon: "https://assets.coingecko.com/markets/images/61/large/kucoin.png?1706864282", desc: "A global exchange offering a broad selection of cryptocurrencies, trading pairs, and advanced trading products." },
+    { name: "Bitget", url: "https://partner.bitget.com/bg/6BTH7M", icon: "https://assets.coingecko.com/markets/images/540/large/2023-07-25_21.47.43.jpg?1706864507", desc: "A crypto trading platform focused on derivatives, copy trading, spot markets, and professional trading tools." },
+    { name: "HTX", url: "https://www.htx.com/invite/id-id/1f?invite_code=d9rh5223", icon: "https://assets.coingecko.com/markets/images/25/large/htx.png?1721712842", desc: "A long-established global exchange providing spot trading, derivatives, and access to numerous digital assets." },
+    { name: "Gate", url: "https://www.gate.com/signup/BQBAXV8L?ref_type=103&utm_cmp=PEYEQdSb", icon: "https://assets.coingecko.com/markets/images/60/large/Frame_1.png?1747795534", desc: "A global crypto exchange known for its extensive altcoin selection, trading products, and token offerings." },
+    { name: "MEXC", url: "https://promote.mexc.com/r/rO9aDYZ5", icon: "https://assets.coingecko.com/markets/images/409/large/logo_new.png?1743600043", desc: "A global exchange offering a wide range of altcoins, spot markets, futures, and various trading opportunities." },
+    { name: "Flipster", url: "https://flipster.io/signin?referral_code=BNTQ9WJGAQ", icon: "https://assets.coingecko.com/markets/images/1048/large/flipster.jpeg?1706865074", desc: "A modern crypto exchange focused on fast execution, derivatives trading, and a smooth trading experience." },
+    { name: "BingX", url: "https://bingx.com/", icon: "https://assets.coingecko.com/markets/images/812/large/YtFwQwJr_400x400.jpg?1706864837", desc: "A social trading platform offering crypto spot, derivatives, copy trading, and community-driven features." },
+    { name: "Kraken", url: "https://www.kraken.com/", icon: "https://assets.coingecko.com/markets/images/29/large/kraken.jpg?1706864265", desc: "A well-established crypto exchange known for security, liquidity, and a wide range of digital assets." },
+    { name: "BitMart", url: "https://www.bitmart.com/invite/VeE3eh/en", icon: "https://assets.coingecko.com/markets/images/239/large/Bitmart.png?1706864341", desc: "A global crypto exchange providing spot trading, futures, and access to a diverse selection of digital assets." },
+    { name: "LBank", url: "https://lbank.com/ref/130RH", icon: "https://assets.coingecko.com/markets/images/118/large/LBank_logo.png?1706864296", desc: "A global cryptocurrency exchange supporting numerous assets, trading pairs, spot markets, and derivatives." },
+    { name: "CoinEx", url: "https://www.coinex.com/register?refer_code=rfauw", icon: "https://assets.coingecko.com/markets/images/135/large/coinex.jpg?1706864305", desc: "A global exchange focused on accessible crypto trading, with spot, futures, and a wide range of assets." },
+    { name: "HashKey", url: "https://global.hashkey.com/en-US/register/invite?invite_code=E7BU9J", icon: "https://assets.coingecko.com/markets/images/1206/large/hashkey_2.png?1706869603", desc: "A regulated digital asset platform serving global users, with a strong focus on compliance and security." },
+    { name: "Backpack", url: "https://backpack.exchange/join/d73b1200-76d8-4e3a-9d2d-ba5868a69d49", icon: "https://assets.coingecko.com/markets/images/1387/large/backpack.jpeg?1708663541", desc: "A Web3-native crypto platform designed around self-custody, trading, and a modern user experience." },
+    { name: "Bittime", url: "https://www.bittime.com/register?inviteCode=EHVLLL", icon: "https://assets.coingecko.com/markets/images/1296/large/1024.png?1706865289", desc: "An Indonesian crypto exchange offering digital asset trading with support for local users and currencies." },
+    { name: "Indodax", url: "https://indodax.com/", icon: "https://assets.coingecko.com/markets/images/3/large/logogram-Indodax-new-_JPG_format.jpg?1706864243", desc: "One of Indonesia's leading crypto exchanges, offering local users access to a variety of digital assets." },
+    { name: "Pintu", url: "https://pintu.co.id/", icon: "https://pintu.co.id/static/images/shared/pintu-logo.svg", desc: "An Indonesian crypto platform designed for simple investing, trading, and easy access to digital assets." },
+    { name: "Tokocrypto", url: "https://www.tokocrypto.com/account/signup?ref=5863SP1E", icon: "https://assets.coingecko.com/markets/images/501/large/toko.png?1706864476", desc: "An Indonesian crypto exchange offering digital asset trading, local support, and educational resources." },
+  ];
+
+  function renderExchanges(){
+    const container = document.getElementById('exchange-body');
+    if(!container || container.dataset.rendered === '1') return;
+    let html = '<h2>Crypto Exchanges</h2>';
+    EXCHANGES.forEach(ex=>{
+      html += '<section class="exchange-item">'
+        + '<a class="exchange-link" href="'+ex.url+'" target="_blank" rel="noopener">'
+        + '<img class="exchange-icon" src="'+ex.icon+'" alt="'+ex.name+'">'
+        + '<h3>'+ex.name+'</h3>'
+        + '</a>'
+        + '<p class="exchange-description">'+ex.desc+'</p>'
+        + '</section>';
+    });
+    container.innerHTML = html;
+    container.dataset.rendered = '1';
+  }
+  renderExchanges();
+
 })();
