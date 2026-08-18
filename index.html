@@ -6,7 +6,7 @@
 <title>0xbabyalien@arch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -60,6 +60,10 @@
           <div class="icon" tabindex="0" data-open="exchange">
             <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h13l-3-4"/><path d="M17 16H4l3 4"/></svg>
             <span>Exchange</span>
+          </div>
+          <div class="icon" tabindex="0" data-open="whale">
+            <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.2"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
+            <span>Whale Radar</span>
           </div>
           <div class="icon" tabindex="0" data-action="trash">
             <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg>
@@ -185,10 +189,33 @@ own profile page.</div>
               <button class="tbtn close" data-act="close"></button>
               <button class="tbtn min" data-act="min"></button>
               <button class="tbtn max" data-act="max"></button>
-              <div class="wtitle">Exchange.app</div>
+              <div class="wtitle">Exchange</div>
             </div>
             <div class="wbody">
               <div class="exchange-body" id="exchange-body"></div>
+            </div>
+          </div>
+
+          <!-- WHALE RADAR -->
+          <div class="window" id="win-whale" style="left:200px;top:70px;width:640px;height:460px;display:none;">
+            <div class="titlebar" data-win="whale">
+              <button class="tbtn close" data-act="close"></button>
+              <button class="tbtn min" data-act="min"></button>
+              <button class="tbtn max" data-act="max"></button>
+              <div class="wtitle">Whale Radar</div>
+            </div>
+            <div class="wbody">
+              <div class="whale-body">
+                <div class="whale-head">
+                  <span class="whale-dot" id="whale-dot"></span>
+                  <span id="whale-status">Scanning Ethereum mainnet for large USDC / USDT transfers…</span>
+                  <button id="whale-refresh" title="Refresh now">↻</button>
+                </div>
+                <div class="whale-cols">
+                  <span>Token</span><span>Value</span><span>From → To</span><span>Age</span>
+                </div>
+                <div id="whale-list" class="whale-list"></div>
+              </div>
             </div>
           </div>
 
@@ -208,8 +235,11 @@ own profile page.</div>
           <div class="dock-item" data-open="about" title="About">
             <svg viewBox="0 0 24 24" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><circle cx="12" cy="8" r="0.6" fill="currentColor"/></svg>
           </div>
-          <div class="dock-item" data-open="exchange" title="Exchange.app">
+          <div class="dock-item" data-open="exchange" title="Exchange">
             <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8h13l-3-4"/><path d="M17 16H4l3 4"/></svg>
+          </div>
+          <div class="dock-item" data-open="whale" title="Whale Radar">
+            <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.2"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
           </div>
           <div class="dock-item" id="dock-lock" title="Lock screen">
             <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
@@ -241,6 +271,6 @@ own profile page.</div>
   <div id="hint">this view looks identical on every device — phone, tablet, or PC</div>
 </div>
 
-<script src="js/script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
