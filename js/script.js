@@ -75,6 +75,7 @@
     const w = windows[id];
     if(!w) return;
     w.style.display = 'flex';
+    centerWindow(w);
     focusWindow(w);
     const dockItem = document.querySelector('.dock-item[data-open="'+id+'"]');
     if(dockItem) dockItem.classList.add('running');
@@ -82,6 +83,14 @@
       const inp = document.getElementById('term-input');
       setTimeout(()=>inp.focus(), 30);
     }
+  }
+  function centerWindow(w){
+    const width = w.offsetWidth;
+    const height = w.offsetHeight;
+    const left = Math.max(0, (VW - width) / 2);
+    const top = Math.max(30, (VH - height) / 2);
+    w.style.left = left + 'px';
+    w.style.top = top + 'px';
   }
   function closeWindow(w){
     w.style.display = 'none';
