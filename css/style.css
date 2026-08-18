@@ -219,7 +219,7 @@
   }
   .exchange-body .exchange-link:hover h3{color:var(--teal);}
   .exchange-body .exchange-description{
-    margin:4px 0 0 30px;max-width:400px;line-height:1.45;font-size:12px;color:var(--subtext);
+    margin:4px 0 0 30px;max-width:600px;line-height:1.45;font-size:12px;color:var(--subtext);
   }
 
   /* Context menu */
