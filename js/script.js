@@ -86,6 +86,9 @@
     if(id === 'whale'){
       startWhaleRadar();
     }
+    if(id === 'market'){
+      startMarket();
+    }
   }
   function centerWindow(w){
     const width = w.offsetWidth;
@@ -198,7 +201,7 @@
         line('A personal Linux-desktop-themed page — built with plain HTML/CSS/JS, looks identical on every device.');
         break;
       case 'ls':
-        line('<span class="path">about.txt</span>  <span class="path">contact.txt</span>  <span class="path">projects/</span>  <span class="path">readme.md</span>  <span class="path">wallpapers/</span>');
+        line('<span class="path">About.txt</span>  <span class="path">Contact.txt</span>  <span class="path">Projects/</span>  <span class="path">Readme.md</span>  <span class="path">Wallpapers/</span>');
         break;
       case 'date':
         line(new Date().toString());
@@ -331,18 +334,27 @@
   function renderExchanges(){
     const container = document.getElementById('exchange-body');
     if(!container || container.dataset.rendered === '1') return;
-    let html = '<h2>Crypto Exchanges</h2>';
+    let html = '<h2>Crypto Exchanges</h2><div class="exchange-grid">';
     EXCHANGES.forEach(ex=>{
-      html += '<section class="exchange-item">'
-        + '<a class="exchange-link" href="'+ex.url+'" target="_blank" rel="noopener">'
+      html += '<div class="exchange-card">'
+        + '<button class="exchange-open" data-url="'+ex.url+'" title="Open '+ex.name+'" aria-label="Open '+ex.name+'">'
+        + '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>'
+        + '</button>'
+        + '<div class="exchange-card-head">'
         + '<img class="exchange-icon" src="'+ex.icon+'" alt="'+ex.name+'">'
         + '<h3>'+ex.name+'</h3>'
-        + '</a>'
-        + '<p class="exchange-description">'+ex.desc+'</p>'
-        + '</section>';
+        + '</div>'
+        + '<p>'+ex.desc+'</p>'
+        + '</div>';
     });
+    html += '</div>';
     container.innerHTML = html;
     container.dataset.rendered = '1';
+    container.querySelectorAll('.exchange-open').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        window.open(btn.getAttribute('data-url'), '_blank', 'noopener');
+      });
+    });
   }
   renderExchanges();
 
@@ -409,5 +421,119 @@
 
   const whaleRefreshBtn = document.getElementById('whale-refresh');
   if(whaleRefreshBtn) whaleRefreshBtn.addEventListener('click', loadWhaleData);
+
+
+  /* ---------- MARKET ---------- */
+  const MARKET_SYMBOLS = ['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT','XRPUSDT','DOGEUSDT','ADAUSDT','AVAXUSDT','LINKUSDT','TONUSDT'];
+  const MARKET_POLL_MS = 15000;
+  let marketChart = null, marketSeries = null;
+  let marketStarted = false, marketPollTimer = null;
+  let marketActiveSymbol = 'BTCUSDT', marketActiveTf = '1h';
+
+  function formatMarketPrice(v){
+    const n = parseFloat(v);
+    if(!isFinite(n)) return '0';
+    return n >= 1 ? n.toLocaleString('en-US', {maximumFractionDigits:2}) : n.toPrecision(4);
+  }
+  function formatMarketVol(v){
+    const n = parseFloat(v);
+    if(n >= 1e9) return (n/1e9).toFixed(2)+'B';
+    if(n >= 1e6) return (n/1e6).toFixed(2)+'M';
+    if(n >= 1e3) return (n/1e3).toFixed(1)+'K';
+    return n.toFixed(0);
+  }
+
+  function initMarketChart(){
+    const el = document.getElementById('market-chart');
+    if(!el || marketChart || typeof LightweightCharts === 'undefined') return;
+    marketChart = LightweightCharts.createChart(el, {
+      layout: { background: { color: 'transparent' }, textColor: '#868ba8' },
+      grid: { vertLines: { color: '#ffffff0a' }, horzLines: { color: '#ffffff0a' } },
+      rightPriceScale: { borderColor: '#ffffff14' },
+      timeScale: { borderColor: '#ffffff14', timeVisible: true },
+      autoSize: true
+    });
+    marketSeries = marketChart.addCandlestickSeries({
+      upColor: '#a6e3a1', downColor: '#f38ba8', borderVisible: false,
+      wickUpColor: '#a6e3a1', wickDownColor: '#f38ba8'
+    });
+  }
+
+  async function loadMarketCandles(symbol, tf){
+    if(!marketSeries) return;
+    try{
+      const res = await fetch('https://api.binance.com/api/v3/klines?symbol='+symbol+'&interval='+tf+'&limit=200');
+      const data = await res.json();
+      if(!Array.isArray(data)) throw new Error('Unexpected candle response');
+      const candles = data.map(k => ({
+        time: Math.floor(k[0] / 1000),
+        open: parseFloat(k[1]), high: parseFloat(k[2]),
+        low: parseFloat(k[3]), close: parseFloat(k[4])
+      }));
+      marketSeries.setData(candles);
+      marketChart.timeScale().fitContent();
+    } catch(err){
+      console.error('Market chart error:', err);
+    }
+  }
+
+  async function loadMarketList(){
+    const list = document.getElementById('market-list');
+    try{
+      const results = await Promise.all(MARKET_SYMBOLS.map(sym =>
+        fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+sym).then(r => r.json())
+      ));
+      list.innerHTML = results.map(t => {
+        const base = t.symbol.replace('USDT','');
+        const change = parseFloat(t.priceChangePercent);
+        const dir = change >= 0 ? 'up' : 'down';
+        const arrow = change >= 0 ? '▲' : '▼';
+        const active = t.symbol === marketActiveSymbol ? ' active' : '';
+        return '<div class="market-row'+active+'" data-symbol="'+t.symbol+'">'
+          + '<span class="market-coin">'+base+'<small>/USDT</small></span>'
+          + '<span class="market-price">$'+formatMarketPrice(t.lastPrice)+'</span>'
+          + '<span class="market-change '+dir+'">'+arrow+' '+Math.abs(change).toFixed(2)+'%</span>'
+          + '<span class="market-vol">$'+formatMarketVol(t.quoteVolume)+'</span>'
+          + '</div>';
+      }).join('');
+      list.querySelectorAll('.market-row').forEach(row => {
+        row.addEventListener('click', () => {
+          marketActiveSymbol = row.getAttribute('data-symbol');
+          const symLabel = document.getElementById('market-symbol');
+          if(symLabel) symLabel.textContent = marketActiveSymbol.replace('USDT','/USDT');
+          list.querySelectorAll('.market-row').forEach(r => r.classList.remove('active'));
+          row.classList.add('active');
+          loadMarketCandles(marketActiveSymbol, marketActiveTf);
+        });
+      });
+    } catch(err){
+      list.innerHTML = '<div class="market-loading">Unable to load market data.</div>';
+    }
+  }
+
+  function startMarket(){
+    initMarketChart();
+    if(marketStarted){
+      loadMarketCandles(marketActiveSymbol, marketActiveTf);
+      loadMarketList();
+      return;
+    }
+    marketStarted = true;
+    loadMarketCandles(marketActiveSymbol, marketActiveTf);
+    loadMarketList();
+    marketPollTimer = setInterval(() => {
+      loadMarketCandles(marketActiveSymbol, marketActiveTf);
+      loadMarketList();
+    }, MARKET_POLL_MS);
+  }
+
+  document.querySelectorAll('.market-tf button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.market-tf button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      marketActiveTf = btn.getAttribute('data-tf');
+      loadMarketCandles(marketActiveSymbol, marketActiveTf);
+    });
+  });
 
 })();
