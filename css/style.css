@@ -205,22 +205,30 @@
     margin:0 0 14px;font-size:13px;letter-spacing:.4px;color:var(--subtext);
     text-transform:uppercase;font-weight:600;
   }
-  .exchange-body .exchange-item{margin-bottom:16px;}
-  .exchange-body .exchange-link{
-    display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);
+  .exchange-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;
   }
-  .exchange-body .exchange-link::before{content:"•";font-size:16px;color:var(--mauve);}
-  .exchange-body .exchange-icon{
-    width:22px;height:22px;object-fit:contain;border-radius:50%;
+  .exchange-card{
+    position:relative;display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:10px;
+    background:var(--surface1);border:1px solid #ffffff0f;color:var(--text);
+    transition:background .12s ease, border-color .12s ease, transform .12s ease;
+  }
+  .exchange-card:hover{background:var(--surface2);border-color:#ffffff20;transform:translateY(-2px);}
+  .exchange-card-head{display:flex;align-items:center;gap:8px;padding-right:26px;}
+  .exchange-icon{
+    width:28px;height:28px;object-fit:contain;border-radius:50%;
     background:var(--surface2);flex:0 0 auto;
   }
-  .exchange-body .exchange-link h3{
-    margin:0;font-size:13.5px;font-weight:600;color:var(--text);transition:color .12s ease;
+  .exchange-card h3{margin:0;font-size:13px;font-weight:600;color:var(--text);}
+  .exchange-card p{margin:0;line-height:1.4;font-size:11.5px;color:var(--subtext);}
+  .exchange-open{
+    position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:6px;
+    background:#ffffff0c;border:1px solid #ffffff14;color:var(--subtext);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    padding:0;transition:background .12s ease, color .12s ease, border-color .12s ease;
   }
-  .exchange-body .exchange-link:hover h3{color:var(--teal);}
-  .exchange-body .exchange-description{
-    margin:4px 0 0 30px;max-width:600px;line-height:1.45;font-size:12px;color:var(--subtext);
-  }
+  .exchange-open svg{width:12px;height:12px;stroke:currentColor;fill:none;}
+  .exchange-open:hover{background:var(--mauve);color:#181925;border-color:transparent;}
 
   /* Context menu */
   #ctxmenu{
@@ -305,3 +313,42 @@
   .whale-age{color:var(--subtext);}
   .whale-empty{padding:24px 14px;color:var(--subtext);text-align:center;}
 
+  /* Market — namespaced, no clashes with other windows */
+  .market-body{display:flex;flex-direction:column;height:100%;font-size:12px;}
+  .market-chart-wrap{
+    flex:1 1 60%;display:flex;flex-direction:column;
+    border-bottom:1px solid #ffffff0f;min-height:180px;
+  }
+  .market-chart-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:8px 14px;color:var(--text);font-size:12.5px;flex:0 0 auto;
+  }
+  #market-symbol{font-weight:600;letter-spacing:.3px;}
+  .market-tf{display:flex;gap:4px;}
+  .market-tf button{
+    background:#ffffff0c;border:1px solid #ffffff14;color:var(--subtext);
+    border-radius:5px;padding:3px 8px;font-size:10.5px;font-family:inherit;cursor:pointer;
+  }
+  .market-tf button:hover{background:#ffffff1a;color:var(--text);}
+  .market-tf button.active{background:var(--mauve);color:#181925;border-color:transparent;font-weight:600;}
+  #market-chart{flex:1;min-height:120px;}
+  .market-list-wrap{flex:1 1 40%;display:flex;flex-direction:column;overflow:hidden;min-height:130px;}
+  .market-cols{
+    display:grid;grid-template-columns:1fr 90px 70px 90px;gap:8px;
+    padding:8px 14px;color:var(--subtext);font-size:10.5px;text-transform:uppercase;
+    letter-spacing:.4px;border-bottom:1px solid #ffffff0c;flex:0 0 auto;
+  }
+  .market-list{flex:1;overflow-y:auto;}
+  .market-row{
+    display:grid;grid-template-columns:1fr 90px 70px 90px;gap:8px;
+    padding:8px 14px;align-items:center;border-bottom:1px solid #ffffff08;cursor:pointer;
+  }
+  .market-row:hover{background:#ffffff08;}
+  .market-row.active{background:#ffffff10;}
+  .market-coin{color:var(--text);font-weight:600;}
+  .market-coin small{color:var(--subtext);font-weight:400;margin-left:3px;}
+  .market-price{color:var(--text);}
+  .market-change.up{color:var(--green);}
+  .market-change.down{color:var(--red);}
+  .market-vol{color:var(--subtext);}
+  .market-loading{padding:24px 14px;color:var(--subtext);text-align:center;}
