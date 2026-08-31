@@ -1,5 +1,102 @@
 (function(){
   "use strict";
+
+  /* ---------- I18N ---------- */
+  const I18N = {
+    en: {
+      wifi:"Wi-Fi", volume:"Volume", battery:"Battery", powerMenu:"Power menu",
+      lockScreenBtn:"Lock Screen", changeWallpaperBtn:"Change Wallpaper", aboutSystemBtn:"About System",
+      arrangeIconsBtn:"Arrange Icons",
+      filesLabel:"Files", terminalLabel:"Terminal", aboutPcLabel:"About PC", exchangeLabel:"Exchange",
+      whaleLabel:"Whale Radar", marketLabel:"Market", trashLabel:"Trash",
+      editorLabel:"Editor", aboutLabel:"About", lockScreenLabel:"Lock screen",
+      projectsLabel:"Projects", wallpapersLabel:"Wallpapers",
+      editorTitle:"Readme.md — Editor",
+      editorToolbar:"The text below can be edited directly (changes are not saved after refresh)",
+      aboutTitle:"About This PC",
+      aboutHost:"Host", aboutKernel:"Kernel", aboutShell:"Shell", aboutWM:"WM",
+      aboutModel:"Model", aboutTerminal:"Terminal",
+      aboutTheme:"Theme", aboutResolution:"Resolution", aboutUptime:"Uptime",
+      marketColCoin:"Coin", marketColPrice:"Price", marketColChange:"24h %", marketColVol:"24h Vol",
+      marketLoading:"Loading market data…", marketError:"Unable to load market data.",
+      whaleScanning:"Scanning Ethereum mainnet for large USDC / USDT transfers…",
+      whaleRefresh:"Refresh now",
+      whaleColToken:"Token", whaleColValue:"Value", whaleColFromTo:"From → To", whaleColAge:"Age",
+      whaleEmpty:"No large transfers found in the latest blocks.",
+      whaleErrorStatus:"Unable to reach Whale Radar API.",
+      whaleErrorDetail:"Could not load data. This window needs the site deployed with /api/whale-radar and an ALCHEMY_API_KEY configured — it will not work when the file is opened locally.",
+      whaleStatusTemplate:(count,minUsd,time)=> count+' transfer(s) ≥ $'+minUsd.toLocaleString('en-US')+' in the last 10 blocks · updated '+time,
+      lockHint:"click / tap anywhere to unlock",
+      hintText:"this view looks identical on every device — phone, tablet, or PC",
+      toastWallpaperChanged:"Wallpaper changed", toastIconsTidy:"Icons are already tidy.",
+      toastEmptyForNow:"Empty for now.", toastTrashEmpty:"Trash is empty.",
+      exchangeOpenTitle:(name)=> "Open "+name,
+      termWelcomePrefix:"Welcome! Type ", termWelcomeSuffix:" to see the command list.",
+      termHelpPrefix:"Available commands:",
+      termAboutText:"A personal Linux-desktop-themed page — built with plain HTML/CSS/JS, looks identical on every device.",
+      termCatOpening:"Opening the readme.md window to view & edit it.",
+      termFileNotFound:"file not found",
+      termSudoMsg:"0xbabyalien is not in the sudoers file. This incident will be reported.",
+      termCmdNotFoundSuffix:" — type help",
+      neofetchOS:"OS", neofetchKernel:"Kernel", neofetchShell:"Shell", neofetchWM:"WM",
+      neofetchTerminal:"Terminal", neofetchTheme:"Theme", neofetchCPU:"CPU", neofetchModel:"Model",
+      readmeContent:"# 0xbabyalien\n\nHey! This is a personal page themed like a Linux desktop.\nTry clicking the icons on the screen, opening the Terminal,\nor right-clicking the desktop to change the wallpaper.\n\n## About\n- Into on-chain research & smart contract exploration\n- Ricing Linux setups (Hyprland, Catppuccin)\n- Building small web3 projects & tooling\n\n## Contact\n- X / Twitter: @0xbabyalien\n- GitHub: github.com/0xbabyalien\n\nEdit this text however you like to turn it into your\nown profile page."
+    },
+    zh: {
+      wifi:"Wi-Fi", volume:"音量", battery:"电池", powerMenu:"电源菜单",
+      lockScreenBtn:"锁定屏幕", changeWallpaperBtn:"更换壁纸", aboutSystemBtn:"关于系统",
+      arrangeIconsBtn:"整理图标",
+      filesLabel:"文件", terminalLabel:"终端", aboutPcLabel:"关于本机", exchangeLabel:"交易所",
+      whaleLabel:"巨鲸雷达", marketLabel:"行情", trashLabel:"回收站",
+      editorLabel:"编辑器", aboutLabel:"关于", lockScreenLabel:"锁屏",
+      projectsLabel:"项目", wallpapersLabel:"壁纸",
+      editorTitle:"Readme.md — 编辑器",
+      editorToolbar:"下方文字可直接编辑（刷新后更改不会保存）",
+      aboutTitle:"关于本机",
+      aboutHost:"主机", aboutKernel:"内核", aboutShell:"终端环境", aboutWM:"窗口管理器",
+      aboutModel:"型号", aboutTerminal:"终端",
+      aboutTheme:"主题", aboutResolution:"分辨率", aboutUptime:"运行时间",
+      marketColCoin:"币种", marketColPrice:"价格", marketColChange:"24小时涨跌", marketColVol:"24小时成交量",
+      marketLoading:"正在加载行情数据…", marketError:"无法加载行情数据。",
+      whaleScanning:"正在扫描以太坊主网上的大额 USDC / USDT 转账…",
+      whaleRefresh:"立即刷新",
+      whaleColToken:"代币", whaleColValue:"金额", whaleColFromTo:"从 → 到", whaleColAge:"时间",
+      whaleEmpty:"最近的区块中未发现大额转账。",
+      whaleErrorStatus:"无法连接巨鲸雷达 API。",
+      whaleErrorDetail:"数据加载失败。此窗口需要部署在配置了 /api/whale-radar 和 ALCHEMY_API_KEY 的服务器上——本地打开文件时无法使用。",
+      whaleStatusTemplate:(count,minUsd,time)=> count+' 笔转账 ≥ $'+minUsd.toLocaleString('en-US')+'，来自最近 10 个区块 · 更新于 '+time,
+      lockHint:"点击 / 轻触任意处解锁",
+      hintText:"无论手机、平板还是电脑，这个界面看起来都一样",
+      toastWallpaperChanged:"壁纸已更换", toastIconsTidy:"图标已经很整齐了。",
+      toastEmptyForNow:"暂时是空的。", toastTrashEmpty:"回收站是空的。",
+      exchangeOpenTitle:(name)=> "打开 "+name,
+      termWelcomePrefix:"欢迎！输入 ", termWelcomeSuffix:" 查看命令列表。",
+      termHelpPrefix:"可用命令：",
+      termAboutText:"一个以 Linux 桌面为主题的个人主页——用纯 HTML/CSS/JS 打造，在任何设备上看起来都一样。",
+      termCatOpening:"正在打开 readme.md 窗口以查看和编辑。",
+      termFileNotFound:"未找到该文件",
+      termSudoMsg:"0xbabyalien 不在 sudoers 文件中。此事件将被报告。",
+      termCmdNotFoundSuffix:" — 输入 help 查看帮助",
+      neofetchOS:"系统", neofetchKernel:"内核", neofetchShell:"终端环境", neofetchWM:"窗口管理器",
+      neofetchTerminal:"终端模拟器", neofetchTheme:"主题", neofetchCPU:"处理器",neofetchModel:"型号",
+      readmeContent:"# 0xbabyalien\n\n嘿！这是一个以 Linux 桌面为主题打造的个人主页。\n试着点击屏幕上的图标、打开终端，\n或者右键点击桌面来更换壁纸。\n\n## 关于\n- 专注于链上研究与智能合约探索\n- 折腾 Linux 环境配置（Hyprland、Catppuccin）\n- 打造一些小型 Web3 项目与工具\n\n## 联系方式\n- X / Twitter：@0xbabyalien\n- GitHub：github.com/0xbabyalien\n\n随意编辑这段文字，把它变成你自己的主页吧。"
+    }
+  };
+  let currentLang = 'en';
+  function T(key){
+    return (I18N[currentLang] && I18N[currentLang][key] !== undefined) ? I18N[currentLang][key] : (I18N.en[key] || key);
+  }
+
+  function applyStaticTranslations(){
+    document.documentElement.setAttribute('lang', currentLang === 'zh' ? 'zh-CN' : 'en');
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      el.textContent = T(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el=>{
+      el.setAttribute('title', T(el.getAttribute('data-i18n-title')));
+    });
+  }
+
   const VW = 1440, VH = 900;
   const desktop = document.getElementById('desktop');
   const screenWrap = document.getElementById('screen-wrap');
@@ -19,16 +116,25 @@
   fitScreen();
 
   /* ---------- CLOCK ---------- */
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const DAY_NAMES = {
+    en: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    zh: ['周日','周一','周二','周三','周四','周五','周六']
+  };
+  const MONTH_NAMES = {
+    en: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    zh: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+  };
   function pad(n){ return n.toString().padStart(2,'0'); }
   function updateClock(){
     const d = new Date();
     const t = pad(d.getHours())+':'+pad(d.getMinutes());
+    const days = DAY_NAMES[currentLang] || DAY_NAMES.en;
+    const months = MONTH_NAMES[currentLang] || MONTH_NAMES.en;
     document.getElementById('clock').textContent = days[d.getDay()]+' '+t;
     const lt = document.getElementById('lock-time');
     const ld = document.getElementById('lock-date');
     if(lt){ lt.textContent = t; ld.textContent = days[d.getDay()]+', '+d.getDate()+' '+
-      ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear(); }
+      months[d.getMonth()]+' '+d.getFullYear(); }
   }
   updateClock(); setInterval(updateClock, 1000);
 
@@ -38,7 +144,11 @@
     const s = Math.floor((Date.now()-bootTime)/1000);
     const m = Math.floor(s/60), sec = s%60;
     const el = document.getElementById('uptime-val');
-    if(el) el.textContent = (m>0? m+' min ':'') + sec + ' sec';
+    if(el){
+      el.textContent = currentLang === 'zh'
+        ? (m>0? m+' 分 ':'') + sec + ' 秒'
+        : (m>0? m+' min ':'') + sec + ' sec';
+    }
   }, 1000);
 
   /* ---------- WORKSPACES ---------- */
@@ -106,10 +216,10 @@
     el.addEventListener('click', ()=> openWindow(el.getAttribute('data-open')));
     el.addEventListener('keydown', e=>{ if(e.key==='Enter') openWindow(el.getAttribute('data-open')); });
   });
-  document.querySelectorAll('[data-toast]').forEach(el=>{
-    el.addEventListener('click', ()=> toast(el.getAttribute('data-toast')));
+  document.querySelectorAll('[data-toast-key]').forEach(el=>{
+    el.addEventListener('click', ()=> toast(T(el.getAttribute('data-toast-key'))));
   });
-  document.querySelector('[data-action="trash"]').addEventListener('click', ()=> toast('Trash is empty.'));
+  document.querySelector('[data-action="trash"]').addEventListener('click', ()=> toast(T('toastTrashEmpty')));
 
   document.querySelectorAll('.window .titlebar').forEach(bar=>{
     const w = bar.closest('.window');
@@ -163,20 +273,22 @@
     out.scrollTop = out.scrollHeight;
   }
   function promptLine(cmd){
-    line('<span class="prompt">0xbabyalien@arch</span> <span class="path">~</span> % '+escapeHtml(cmd));
+    line('<span class="prompt">0xbabyalien@BBalien</span> <span class="path">~</span> % '+escapeHtml(cmd));
   }
   function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  const neofetch = [
-    '       /\\\\           <b>0xbabyalien@arch</b>',
-    '      /  \\\\          -----------------',
-    '     /    \\\\         OS: 0xOS (Arch-based) x86_64',
-    '    /------\\\\        Kernel: 6.9.4-arch1',
-    '   /        \\\\       Shell: zsh 5.9',
-    '  /__________\\\\      WM: Hyprland',
-    '                     Terminal: kitty',
-    '                     Theme: Catppuccin Mocha (custom)',
-    '                     CPU: virtual/8-core',
+  const neofetch = () => [
+    '                     🌏🚀----🛰🛸----🌒☄----🪐👽',
+    '       /\\\\           <b>0xbabyalien@BBalien</b>',
+    '      /  \\\\          ------------------------------',
+    '     /    \\\\         '+T('neofetchOS')+': GNU/LINUX unix (BBalien-based) x86_64',
+    '    /------\\\\        '+T('neofetchKernel')+': 6.9.4-BBalien',
+    '   /        \\\\       '+T('neofetchShell')+': kali 7.9',
+    '  /__________\\\\      '+T('neofetchWM')+': Hyprland',
+    '                     '+T('neofetchTerminal')+': ubuntu 14.04 LTS',
+    '                     '+T('neofetchTheme')+': Catppuccin Mocha (Gnome)',
+    '                     '+T('neofetchModel')+': debian, kali, ubuntu',
+    '                     '+T('neofetchCPU')+': virtual/8-core',
   ].join('\n');
 
   const history = []; let hIdx = -1;
@@ -189,16 +301,16 @@
     const parts = c.split(' ');
     switch(parts[0]){
       case 'help':
-        line('Available commands: <span class="dim">help, neofetch, whoami, about, ls, cat readme.md, date, clear</span>');
+        line(T('termHelpPrefix')+' <span class="dim">help, neofetch, whoami, about, ls, cat readme.md, date, clear</span>');
         break;
       case 'neofetch':
-        line('<pre style="margin:0;font-family:inherit;">'+neofetch+'</pre>');
+        line('<pre style="margin:0;font-family:inherit;">'+neofetch()+'</pre>');
         break;
       case 'whoami':
         line('0xbabyalien');
         break;
       case 'about':
-        line('A personal Linux-desktop-themed page — built with plain HTML/CSS/JS, looks identical on every device.');
+        line(T('termAboutText'));
         break;
       case 'ls':
         line('<span class="path">About.txt</span>  <span class="path">Contact.txt</span>  <span class="path">Projects/</span>  <span class="path">Readme.md</span>  <span class="path">Wallpapers/</span>');
@@ -210,21 +322,24 @@
         out.innerHTML = ''; return;
       case 'cat':
         if(parts[1] === 'readme.md'){
-          line('<span class="dim">Opening the readme.md window to view & edit it.</span>');
+          line('<span class="dim">'+T('termCatOpening')+'</span>');
           openWindow('editor');
         } else {
-          line('<span class="err">cat: '+escapeHtml(parts[1]||'')+': file not found</span>');
+          line('<span class="err">cat: '+escapeHtml(parts[1]||'')+': '+T('termFileNotFound')+'</span>');
         }
         break;
       case 'sudo':
-        line('<span class="err">0xbabyalien is not in the sudoers file. This incident will be reported.</span> 😄');
+        line('<span class="err">'+T('termSudoMsg')+'</span> 😄');
         break;
       default:
-        line('<span class="err">zsh: command not found: '+escapeHtml(parts[0])+'</span> — type <span class="dim">help</span>');
+        line('<span class="err">kali: command not found: '+escapeHtml(parts[0])+'</span>'+T('termCmdNotFoundSuffix'));
     }
   }
 
-  line('<span class="dim">Welcome! Type </span><span class="prompt">help</span><span class="dim"> to see the command list.</span>');
+  function printWelcome(){
+    line('<span class="dim">'+T('termWelcomePrefix')+'</span><span class="prompt">help</span><span class="dim">'+T('termWelcomeSuffix')+'</span>');
+  }
+  printWelcome();
 
   input.addEventListener('keydown', e=>{
     if(e.key === 'Enter'){
@@ -251,7 +366,7 @@
   function cycleWallpaper(){
     wallIdx = (wallIdx+1) % wallpapers.length;
     document.getElementById('wallpaper').style.background = wallpapers[wallIdx];
-    toast('Wallpaper changed');
+    toast(T('toastWallpaperChanged'));
   }
 
   /* ---------- POWER MENU ---------- */
@@ -302,54 +417,56 @@
   document.addEventListener('click', e=>{ if(!ctx.contains(e.target)) ctx.classList.remove('show'); });
 
   document.getElementById('ctx-wall').addEventListener('click', ()=>{ ctx.classList.remove('show'); cycleWallpaper(); });
-  document.getElementById('ctx-icons').addEventListener('click', ()=>{ ctx.classList.remove('show'); toast('Icons are already tidy.'); });
+  document.getElementById('ctx-icons').addEventListener('click', ()=>{ ctx.classList.remove('show'); toast(T('toastIconsTidy')); });
   document.getElementById('ctx-about').addEventListener('click', ()=>{ ctx.classList.remove('show'); openWindow('about'); });
 
 
   /* ---------- EXCHANGE.APP ---------- */
   const EXCHANGES = [
-    { name: "Binance", url: "https://www.bmwweb.biz/activity/referral-entry/CPA?ref=CPA_0090JQX9TW", icon: "https://assets.coingecko.com/markets/images/52/large/binance.jpg?1706864274", desc: "One of the world's largest crypto exchanges, offering spot trading, futures, and a wide range of digital assets." },
-    { name: "Coinbase", url: "https://www.coinbase.com/", icon: "https://assets.coingecko.com/markets/images/23/large/Coinbase_Coin_Primary.png?1706864258", desc: "A major U.S.-based crypto platform known for its simple interface, security focus, and beginner-friendly experience." },
-    { name: "OKX", url: "https://okx.ac/join/14970201", icon: "https://assets.coingecko.com/markets/images/96/large/WeChat_Image_20220117220452.png?1706864283", desc: "A global crypto exchange offering spot, derivatives, Web3 tools, and a broad range of trading products." },
-    { name: "Bybit", url: "https://www.bybitglobal.com/invite?ref=K7LWKX", icon: "https://assets.coingecko.com/markets/images/698/large/bybit_spot.png?1706864649", desc: "A global trading platform popular for derivatives, spot markets, copy trading, and advanced trading features." },
-    { name: "KuCoin", url: "https://www.kucoin.com/r/rf/QBS1MW4T", icon: "https://assets.coingecko.com/markets/images/61/large/kucoin.png?1706864282", desc: "A global exchange offering a broad selection of cryptocurrencies, trading pairs, and advanced trading products." },
-    { name: "Bitget", url: "https://partner.bitget.com/bg/6BTH7M", icon: "https://assets.coingecko.com/markets/images/540/large/2023-07-25_21.47.43.jpg?1706864507", desc: "A crypto trading platform focused on derivatives, copy trading, spot markets, and professional trading tools." },
-    { name: "HTX", url: "https://www.htx.com/invite/id-id/1f?invite_code=d9rh5223", icon: "https://assets.coingecko.com/markets/images/25/large/htx.png?1721712842", desc: "A long-established global exchange providing spot trading, derivatives, and access to numerous digital assets." },
-    { name: "Gate", url: "https://www.gate.com/signup/BQBAXV8L?ref_type=103&utm_cmp=PEYEQdSb", icon: "https://assets.coingecko.com/markets/images/60/large/Frame_1.png?1747795534", desc: "A global crypto exchange known for its extensive altcoin selection, trading products, and token offerings." },
-    { name: "MEXC", url: "https://promote.mexc.com/r/rO9aDYZ5", icon: "https://assets.coingecko.com/markets/images/409/large/logo_new.png?1743600043", desc: "A global exchange offering a wide range of altcoins, spot markets, futures, and various trading opportunities." },
-    { name: "Flipster", url: "https://flipster.io/signin?referral_code=BNTQ9WJGAQ", icon: "https://assets.coingecko.com/markets/images/1048/large/flipster.jpeg?1706865074", desc: "A modern crypto exchange focused on fast execution, derivatives trading, and a smooth trading experience." },
-    { name: "BingX", url: "https://bingx.com/", icon: "https://assets.coingecko.com/markets/images/812/large/YtFwQwJr_400x400.jpg?1706864837", desc: "A social trading platform offering crypto spot, derivatives, copy trading, and community-driven features." },
-    { name: "Kraken", url: "https://www.kraken.com/", icon: "https://assets.coingecko.com/markets/images/29/large/kraken.jpg?1706864265", desc: "A well-established crypto exchange known for security, liquidity, and a wide range of digital assets." },
-    { name: "BitMart", url: "https://www.bitmart.com/invite/VeE3eh/en", icon: "https://assets.coingecko.com/markets/images/239/large/Bitmart.png?1706864341", desc: "A global crypto exchange providing spot trading, futures, and access to a diverse selection of digital assets." },
-    { name: "LBank", url: "https://lbank.com/ref/130RH", icon: "https://assets.coingecko.com/markets/images/118/large/LBank_logo.png?1706864296", desc: "A global cryptocurrency exchange supporting numerous assets, trading pairs, spot markets, and derivatives." },
-    { name: "CoinEx", url: "https://www.coinex.com/register?refer_code=rfauw", icon: "https://assets.coingecko.com/markets/images/135/large/coinex.jpg?1706864305", desc: "A global exchange focused on accessible crypto trading, with spot, futures, and a wide range of assets." },
-    { name: "HashKey", url: "https://global.hashkey.com/en-US/register/invite?invite_code=E7BU9J", icon: "https://assets.coingecko.com/markets/images/1206/large/hashkey_2.png?1706869603", desc: "A regulated digital asset platform serving global users, with a strong focus on compliance and security." },
-    { name: "Backpack", url: "https://backpack.exchange/join/d73b1200-76d8-4e3a-9d2d-ba5868a69d49", icon: "https://assets.coingecko.com/markets/images/1387/large/backpack.jpeg?1708663541", desc: "A Web3-native crypto platform designed around self-custody, trading, and a modern user experience." },
-    { name: "Bittime", url: "https://www.bittime.com/register?inviteCode=EHVLLL", icon: "https://assets.coingecko.com/markets/images/1296/large/1024.png?1706865289", desc: "An Indonesian crypto exchange offering digital asset trading with support for local users and currencies." },
-    { name: "Indodax", url: "https://indodax.com/", icon: "https://assets.coingecko.com/markets/images/3/large/logogram-Indodax-new-_JPG_format.jpg?1706864243", desc: "One of Indonesia's leading crypto exchanges, offering local users access to a variety of digital assets." },
-    { name: "Pintu", url: "https://pintu.co.id/", icon: "https://pintu.co.id/static/images/shared/pintu-logo.svg", desc: "An Indonesian crypto platform designed for simple investing, trading, and easy access to digital assets." },
-    { name: "Tokocrypto", url: "https://www.tokocrypto.com/account/signup?ref=5863SP1E", icon: "https://assets.coingecko.com/markets/images/501/large/toko.png?1706864476", desc: "An Indonesian crypto exchange offering digital asset trading, local support, and educational resources." },
+    { name: "Binance", url: "https://www.bmwweb.biz/activity/referral-entry/CPA?ref=CPA_0090JQX9TW", icon: "https://assets.coingecko.com/markets/images/52/large/binance.jpg?1706864274", desc: "One of the world's largest crypto exchanges, offering spot trading, futures, and a wide range of digital assets.", desc_zh: "全球最大的加密货币交易所之一，提供现货交易、合约交易及丰富的数字资产。" },
+    { name: "Coinbase", url: "https://www.coinbase.com/", icon: "https://assets.coingecko.com/markets/images/23/large/Coinbase_Coin_Primary.png?1706864258", desc: "A major U.S.-based crypto platform known for its simple interface, security focus, and beginner-friendly experience.", desc_zh: "美国主流加密货币平台，以简洁界面、安全性和新手友好著称。" },
+    { name: "OKX", url: "https://okx.ac/join/14970201", icon: "https://assets.coingecko.com/markets/images/96/large/WeChat_Image_20220117220452.png?1706864283", desc: "A global crypto exchange offering spot, derivatives, Web3 tools, and a broad range of trading products.", desc_zh: "全球性加密货币交易所，提供现货、衍生品、Web3 工具及多样化交易产品。" },
+    { name: "Bybit", url: "https://www.bybitglobal.com/invite?ref=K7LWKX", icon: "https://assets.coingecko.com/markets/images/698/large/bybit_spot.png?1706864649", desc: "A global trading platform popular for derivatives, spot markets, copy trading, and advanced trading features.", desc_zh: "以衍生品、现货市场、跟单交易及进阶交易功能闻名的全球交易平台。" },
+    { name: "KuCoin", url: "https://www.kucoin.com/r/rf/QBS1MW4T", icon: "https://assets.coingecko.com/markets/images/61/large/kucoin.png?1706864282", desc: "A global exchange offering a broad selection of cryptocurrencies, trading pairs, and advanced trading products.", desc_zh: "提供丰富币种、交易对及进阶交易产品的全球交易所。" },
+    { name: "Bitget", url: "https://partner.bitget.com/bg/6BTH7M", icon: "https://assets.coingecko.com/markets/images/540/large/2023-07-25_21.47.43.jpg?1706864507", desc: "A crypto trading platform focused on derivatives, copy trading, spot markets, and professional trading tools.", desc_zh: "专注于合约交易、跟单交易、现货市场及专业交易工具的平台。" },
+    { name: "HTX", url: "https://www.htx.com/invite/id-id/1f?invite_code=d9rh5223", icon: "https://assets.coingecko.com/markets/images/25/large/htx.png?1721712842", desc: "A long-established global exchange providing spot trading, derivatives, and access to numerous digital assets.", desc_zh: "历史悠久的全球交易所，提供现货交易、衍生品及众多数字资产。" },
+    { name: "Gate", url: "https://www.gate.com/signup/BQBAXV8L?ref_type=103&utm_cmp=PEYEQdSb", icon: "https://assets.coingecko.com/markets/images/60/large/Frame_1.png?1747795534", desc: "A global crypto exchange known for its extensive altcoin selection, trading products, and token offerings.", desc_zh: "以丰富的山寨币选择、交易产品及代币发行著称的全球交易所。" },
+    { name: "MEXC", url: "https://promote.mexc.com/r/rO9aDYZ5", icon: "https://assets.coingecko.com/markets/images/409/large/logo_new.png?1743600043", desc: "A global exchange offering a wide range of altcoins, spot markets, futures, and various trading opportunities.", desc_zh: "提供大量山寨币、现货市场、合约及多样交易机会的全球交易所。" },
+    { name: "Flipster", url: "https://flipster.io/signin?referral_code=BNTQ9WJGAQ", icon: "https://assets.coingecko.com/markets/images/1048/large/flipster.jpeg?1706865074", desc: "A modern crypto exchange focused on fast execution, derivatives trading, and a smooth trading experience.", desc_zh: "专注于极速成交、合约交易与流畅体验的现代化交易所。" },
+    { name: "BingX", url: "https://bingx.com/", icon: "https://assets.coingecko.com/markets/images/812/large/YtFwQwJr_400x400.jpg?1706864837", desc: "A social trading platform offering crypto spot, derivatives, copy trading, and community-driven features.", desc_zh: "提供现货、合约、跟单交易及社区互动功能的社交化交易平台。" },
+    { name: "Kraken", url: "https://www.kraken.com/", icon: "https://assets.coingecko.com/markets/images/29/large/kraken.jpg?1706864265", desc: "A well-established crypto exchange known for security, liquidity, and a wide range of digital assets.", desc_zh: "以安全性、流动性及丰富数字资产著称的老牌交易所。" },
+    { name: "BitMart", url: "https://www.bitmart.com/invite/VeE3eh/en", icon: "https://assets.coingecko.com/markets/images/239/large/Bitmart.png?1706864341", desc: "A global crypto exchange providing spot trading, futures, and access to a diverse selection of digital assets.", desc_zh: "提供现货交易、合约及多样化数字资产的全球交易所。" },
+    { name: "LBank", url: "https://lbank.com/ref/130RH", icon: "https://assets.coingecko.com/markets/images/118/large/LBank_logo.png?1706864296", desc: "A global cryptocurrency exchange supporting numerous assets, trading pairs, spot markets, and derivatives.", desc_zh: "支持众多资产、交易对、现货市场及衍生品的全球交易所。" },
+    { name: "CoinEx", url: "https://www.coinex.com/register?refer_code=rfauw", icon: "https://assets.coingecko.com/markets/images/135/large/coinex.jpg?1706864305", desc: "A global exchange focused on accessible crypto trading, with spot, futures, and a wide range of assets.", desc_zh: "专注于易上手交易的全球交易所，提供现货、合约及丰富资产。" },
+    { name: "HashKey", url: "https://global.hashkey.com/en-US/register/invite?invite_code=E7BU9J", icon: "https://assets.coingecko.com/markets/images/1206/large/hashkey_2.png?1706869603", desc: "A regulated digital asset platform serving global users, with a strong focus on compliance and security.", desc_zh: "面向全球用户的持牌数字资产平台，高度重视合规与安全。" },
+    { name: "Backpack", url: "https://backpack.exchange/join/d73b1200-76d8-4e3a-9d2d-ba5868a69d49", icon: "https://assets.coingecko.com/markets/images/1387/large/backpack.jpeg?1708663541", desc: "A Web3-native crypto platform designed around self-custody, trading, and a modern user experience.", desc_zh: "以自托管、交易与现代化体验为核心的原生 Web3 平台。" },
+    { name: "Bittime", url: "https://www.bittime.com/register?inviteCode=EHVLLL", icon: "https://assets.coingecko.com/markets/images/1296/large/1024.png?1706865289", desc: "An Indonesian crypto exchange offering digital asset trading with support for local users and currencies.", desc_zh: "印度尼西亚加密货币交易所，支持本地用户与货币的数字资产交易。" },
+    { name: "Indodax", url: "https://indodax.com/", icon: "https://assets.coingecko.com/markets/images/3/large/logogram-Indodax-new-_JPG_format.jpg?1706864243", desc: "One of Indonesia's leading crypto exchanges, offering local users access to a variety of digital assets.", desc_zh: "印度尼西亚领先的加密货币交易所之一，为本地用户提供多样数字资产。" },
+    { name: "Pintu", url: "https://pintu.co.id/", icon: "https://pintu.co.id/static/images/shared/pintu-logo.svg", desc: "An Indonesian crypto platform designed for simple investing, trading, and easy access to digital assets.", desc_zh: "印度尼西亚加密货币平台，专为简单投资、交易与轻松获取数字资产而设计。" },
+    { name: "Tokocrypto", url: "https://www.tokocrypto.com/account/signup?ref=5863SP1E", icon: "https://assets.coingecko.com/markets/images/501/large/toko.png?1706864476", desc: "An Indonesian crypto exchange offering digital asset trading, local support, and educational resources.", desc_zh: "印度尼西亚加密货币交易所，提供数字资产交易、本地支持及教育资源。" },
   ];
 
   function renderExchanges(){
     const container = document.getElementById('exchange-body');
-    if(!container || container.dataset.rendered === '1') return;
-    let html = '<h2>Crypto Exchanges</h2><div class="exchange-grid">';
+    if(!container) return;
+    const heading = currentLang === 'zh' ? '加密货币交易所' : 'Crypto Exchanges';
+    let html = '<h2>'+heading+'</h2><div class="exchange-grid">';
     EXCHANGES.forEach(ex=>{
+      const desc = currentLang === 'zh' ? ex.desc_zh : ex.desc;
+      const openTitle = T('exchangeOpenTitle')(ex.name);
       html += '<div class="exchange-card">'
-        + '<button class="exchange-open" data-url="'+ex.url+'" title="Open '+ex.name+'" aria-label="Open '+ex.name+'">'
+        + '<button class="exchange-open" data-url="'+ex.url+'" title="'+openTitle+'" aria-label="'+openTitle+'">'
         + '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>'
         + '</button>'
         + '<div class="exchange-card-head">'
         + '<img class="exchange-icon" src="'+ex.icon+'" alt="'+ex.name+'">'
         + '<h3>'+ex.name+'</h3>'
         + '</div>'
-        + '<p>'+ex.desc+'</p>'
+        + '<p>'+desc+'</p>'
         + '</div>';
     });
     html += '</div>';
     container.innerHTML = html;
-    container.dataset.rendered = '1';
     container.querySelectorAll('.exchange-open').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         window.open(btn.getAttribute('data-url'), '_blank', 'noopener');
@@ -372,7 +489,7 @@
   function renderWhaleRows(transfers){
     const list = document.getElementById('whale-list');
     if(!transfers || transfers.length === 0){
-      list.innerHTML = '<div class="whale-empty">No large transfers found in the latest blocks.</div>';
+      list.innerHTML = '<div class="whale-empty">'+T('whaleEmpty')+'</div>';
       return;
     }
     list.innerHTML = transfers.map(t => (
@@ -399,16 +516,12 @@
         throw new Error(data.error || ('HTTP ' + res.status));
       }
       dot.classList.remove('error');
-      status.textContent = data.count + ' transfer(s) ≥ $' + data.minUsd.toLocaleString('en-US')
-        + ' in the last 10 blocks · updated ' + new Date(data.updatedAt).toLocaleTimeString();
+      status.textContent = T('whaleStatusTemplate')(data.count, data.minUsd, new Date(data.updatedAt).toLocaleTimeString());
       renderWhaleRows(data.transfers);
     } catch(err){
       dot.classList.add('error');
-      status.textContent = 'Unable to reach Whale Radar API.';
-      document.getElementById('whale-list').innerHTML =
-        '<div class="whale-empty">Could not load data. This window needs the site deployed with '
-        + '<span class="dim">/api/whale-radar</span> and an <span class="dim">ALCHEMY_API_KEY</span> configured '
-        + '— it will not work when the file is opened locally.</div>';
+      status.textContent = T('whaleErrorStatus');
+      document.getElementById('whale-list').innerHTML = '<div class="whale-empty">'+T('whaleErrorDetail')+'</div>';
     }
   }
 
@@ -507,7 +620,7 @@
         });
       });
     } catch(err){
-      list.innerHTML = '<div class="market-loading">Unable to load market data.</div>';
+      list.innerHTML = '<div class="market-loading">'+T('marketError')+'</div>';
     }
   }
 
@@ -534,6 +647,38 @@
       marketActiveTf = btn.getAttribute('data-tf');
       loadMarketCandles(marketActiveSymbol, marketActiveTf);
     });
+  });
+
+
+  /* ---------- LANGUAGE SWITCHING ---------- */
+  const editorBody = document.getElementById('editor-body');
+  let editorEdited = false;
+  if(editorBody){
+    editorBody.addEventListener('input', ()=>{ editorEdited = true; });
+  }
+
+  function applyLanguage(lang){
+    if(lang !== 'en' && lang !== 'zh') return;
+    currentLang = lang;
+    applyStaticTranslations();
+    document.querySelectorAll('.lang-btn').forEach(btn=>{
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+    updateClock();
+    renderExchanges();
+    if(editorBody && !editorEdited){
+      editorBody.textContent = T('readmeContent');
+    }
+    if(windows.whale && windows.whale.style.display !== 'none'){
+      loadWhaleData();
+    }
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyLanguage(btn.getAttribute('data-lang')));
+  });
+  document.querySelectorAll('.ctx-lang-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> ctx.classList.remove('show'));
   });
 
 })();
