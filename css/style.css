@@ -368,3 +368,123 @@ a {
   color: #ff0000; /* Changes link color */
   text-decoration: none; /* Removes underline */
 }
+
+/* ---------- RIGHT-SIDE WIDGETS ---------- */
+#widgets{
+  position:absolute;top:50px;right:14px;
+  display:flex;flex-direction:column;gap:10px;
+  width:170px;z-index:5;
+}
+.widget{
+  background:var(--surface0);
+  border:1px solid #ffffff14;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 8px 20px #00000060;
+  transition:opacity .2s ease, transform .2s ease;
+}
+.widget.collapsed .widget-body{display:none;}
+.widget-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 10px;
+  background:var(--surface1);
+  border-bottom:1px solid #ffffff0f;
+  cursor:pointer;
+}
+.widget-title{
+  font-size:11px;font-weight:600;color:var(--text);
+  letter-spacing:.3px;
+}
+.widget-toggle{
+  background:none;border:none;color:var(--subtext);
+  font-family:inherit;font-size:14px;cursor:pointer;
+  width:18px;height:18px;display:flex;align-items:center;justify-content:center;
+  border-radius:4px;transition:background .12s ease, color .12s ease;
+}
+.widget-toggle:hover{background:#ffffff12;color:var(--text);}
+.widget-body{padding:8px 10px;font-size:11px;color:var(--text);}
+
+/* Browser Widget */
+.widget-link{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 6px;border-radius:6px;
+  color:var(--text);text-decoration:none;
+  transition:background .12s ease;
+  margin-bottom:2px;
+}
+.widget-link:last-child{margin-bottom:0;}
+.widget-link:hover{background:#ffffff10;}
+.widget-link svg{width:14px;height:14px;stroke:var(--teal);fill:none;flex:0 0 auto;}
+.widget-link span{font-size:11px;color:var(--subtext);}
+.widget-link:hover span{color:var(--text);}
+
+/* Portfolio Widget */
+.widget-row{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 0;border-bottom:1px solid #ffffff08;
+}
+.widget-row:last-child{border-bottom:none;}
+.widget-coin{
+  width:36px;font-size:10.5px;font-weight:600;color:var(--teal);
+  flex:0 0 auto;
+}
+.widget-alloc{
+  width:28px;font-size:10.5px;color:var(--subtext);text-align:right;
+  flex:0 0 auto;
+}
+.widget-bar{
+  flex:1;height:4px;border-radius:2px;background:var(--surface2);overflow:hidden;
+}
+.widget-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--teal),var(--green));
+}
+.widget-total{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:8px;padding-top:8px;border-top:1px solid #ffffff14;
+  font-size:11px;
+}
+.widget-total span:first-child{color:var(--subtext);}
+.widget-value{color:var(--green);font-weight:600;}
+
+/* Settings Widget */
+.widget-switch{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 0;cursor:pointer;
+}
+.widget-switch input{appearance:none;width:0;height:0;opacity:0;}
+.widget-slider{
+  width:28px;height:16px;border-radius:8px;
+  background:var(--surface2);position:relative;
+  transition:background .2s ease;flex:0 0 auto;
+}
+.widget-slider::after{
+  content:"";position:absolute;top:2px;left:2px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--subtext);transition:transform .2s ease, background .2s ease;
+}
+.widget-switch input:checked + .widget-slider{background:var(--mauve);}
+.widget-switch input:checked + .widget-slider::after{
+  transform:translateX(12px);background:var(--text);
+}
+.widget-label{font-size:11px;color:var(--subtext);}
+.widget-switch:hover .widget-label{color:var(--text);}
+
+/* Sticky Notes Widget */
+#sticky-note{
+  width:100%;min-height:70px;resize:vertical;
+  background:var(--surface1);
+  border:1px solid #ffffff14;border-radius:6px;
+  padding:8px;font-family:inherit;font-size:11px;
+  color:var(--text);outline:none;
+  line-height:1.5;
+}
+#sticky-note::placeholder{color:var(--subtext);}
+#sticky-note:focus{border-color:var(--mauve);}
+
+/* Animation toggle */
+body.no-anim *{animation:none !important;transition:none !important;}
+body.no-anim .widget-toggle{transition:none !important;}
+body.no-anim .widget{transition:none !important;}
+body.no-anim .dock-item{transition:none !important;}
+body.no-anim .widget-slider::after{transition:none !important;}
