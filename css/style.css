@@ -93,6 +93,15 @@
   #tray{display:flex;align-items:center;gap:14px;color:var(--subtext);}
   #tray span{display:flex;align-items:center;gap:4px;}
   #tray svg{width:14px;height:14px;stroke:var(--subtext);fill:none;}
+  #lang-toggle{display:flex;align-items:center;gap:4px;}
+  .lang-btn{
+    background:none;border:none;color:var(--subtext);font-family:inherit;font-size:11px;
+    font-weight:600;letter-spacing:.2px;cursor:pointer;padding:2px 3px;border-radius:4px;
+    transition:color .12s ease, background .12s ease;
+  }
+  .lang-btn:hover{background:#ffffff10;color:var(--text);}
+  .lang-btn.active{color:var(--mauve);}
+  .lang-sep{color:var(--subtext);font-size:11px;}
   #powerbtn{cursor:pointer;color:var(--text);display:flex;align-items:center;}
   #powerbtn svg{width:15px;height:15px;stroke:var(--text);fill:none;}
   #powermenu{
@@ -243,6 +252,8 @@
   }
   #ctxmenu button:hover{background:#ffffff12;}
   #ctxmenu hr{border:none;border-top:1px solid #ffffff14;margin:4px 2px;}
+  .ctx-lang{display:flex;align-items:center;gap:6px;padding:6px 10px;font-size:12.5px;color:var(--text);}
+  .ctx-lang-btn{font-size:12px;}
 
   /* Toast */
   #toast{
@@ -352,3 +363,8 @@
   .market-change.down{color:var(--red);}
   .market-vol{color:var(--subtext);}
   .market-loading{padding:24px 14px;color:var(--subtext);text-align:center;}
+
+a {
+  color: #ff0000; /* Changes link color */
+  text-decoration: none; /* Removes underline */
+}
