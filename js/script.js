@@ -26,6 +26,16 @@
       whaleErrorStatus:"Unable to reach Whale Radar API.",
       whaleErrorDetail:"Could not load data. This window needs the site deployed with /api/whale-radar and an ALCHEMY_API_KEY configured — it will not work when the file is opened locally.",
       whaleStatusTemplate:(count,minUsd,time)=> count+' transfer(s) ≥ $'+minUsd.toLocaleString('en-US')+' in the last 10 blocks · updated '+time,
+      scanLabel:"Scan", scanPlaceholder:"Enter wallet address (0x...)", scanSearchBtn:"Search",
+      scanColHash:"Tx Hash", scanColChain:"Chain", scanColType:"Type", scanColTime:"Time",
+      scanTypeSend:"Send", scanTypeReceive:"Receive", scanTypeCreate:"Create",
+      scanTypeApprove:"Approve", scanTypeCall:"Call",
+      scanHint:"Enter a wallet address above and press search to load its latest transactions from Blockscout.",
+      scanLoading:"Loading transactions from Blockscout…",
+      scanEmpty:"No transactions found for this address.",
+      scanInvalidAddress:"That doesn't look like a valid wallet address.",
+      scanErrorStatus:"Unable to reach the Scan API.",
+      scanErrorDetail:"Could not load data. This window needs the site deployed with /api/scan — it will not work when the file is opened locally.",
       lockHint:"click / tap anywhere to unlock",
       hintText:"this view looks identical on every device — phone, tablet, or PC",
       toastWallpaperChanged:"Wallpaper changed", toastIconsTidy:"Icons are already tidy.",
@@ -40,7 +50,13 @@
       termCmdNotFoundSuffix:" — type help",
       neofetchOS:"OS", neofetchKernel:"Kernel", neofetchShell:"Shell", neofetchWM:"WM",
       neofetchTerminal:"Terminal", neofetchTheme:"Theme", neofetchCPU:"CPU", neofetchModel:"Model",
-      readmeContent:"# 0xbabyalien\n\nHey! This is a personal page themed like a Linux desktop.\nTry clicking the icons on the screen, opening the Terminal,\nor right-clicking the desktop to change the wallpaper.\n\n## About\n- Into on-chain research & smart contract exploration\n- Ricing Linux setups (Hyprland, Catppuccin)\n- Building small web3 projects & tooling\n\n## Contact\n- X / Twitter: @0xbabyalien\n- GitHub: github.com/0xbabyalien\n\nEdit this text however you like to turn it into your\nown profile page."
+      readmeContent:"# 0xbabyalien\n\nHey! This is a personal page themed like a Linux desktop.\nTry clicking the icons on the screen, opening the Terminal,\nor right-clicking the desktop to change the wallpaper.\n\n## About\n- Into on-chain research & smart contract exploration\n- Ricing Linux setups (Hyprland, Catppuccin)\n- Building small web3 projects & tooling\n\n## Contact\n- X / Twitter: @0xbabyalien\n- GitHub: github.com/0xbabyalien\n\nEdit this text however you like to turn it into your\nown profile page.",
+      widgetBrowserTitle:"Browser", widgetPortfolioTitle:"Portfolio", widgetSettingsTitle:"Settings", widgetNotesTitle:"Sticky Notes",
+      widgetTotalValue:"Total Value", widgetPlaceholderNote:"Type a quick note here...",
+      widgetLabelGrid:"Desktop Grid", widgetLabelVignette:"Vignette", widgetLabelAnimations:"Animations", widgetLabelGlass:"Glassmorphism",
+      twitterMirrorLabel:"X Mirror", twitterEmbedLoading:"Loading X timeline…",
+      twitterFallbackText:"Couldn't load the live timeline here.",
+      twitterFallbackBtn:"Open on X", twitterFallbackRetry:"Try again"
     },
     zh: {
       wifi:"Wi-Fi", volume:"音量", battery:"电池", powerMenu:"电源菜单",
@@ -65,6 +81,16 @@
       whaleErrorStatus:"无法连接巨鲸雷达 API。",
       whaleErrorDetail:"数据加载失败。此窗口需要部署在配置了 /api/whale-radar 和 ALCHEMY_API_KEY 的服务器上——本地打开文件时无法使用。",
       whaleStatusTemplate:(count,minUsd,time)=> count+' 笔转账 ≥ $'+minUsd.toLocaleString('en-US')+'，来自最近 10 个区块 · 更新于 '+time,
+      scanLabel:"扫描", scanPlaceholder:"输入钱包地址 (0x...)", scanSearchBtn:"搜索",
+      scanColHash:"交易哈希", scanColChain:"链", scanColType:"类型", scanColTime:"时间",
+      scanTypeSend:"转出", scanTypeReceive:"转入", scanTypeCreate:"创建合约",
+      scanTypeApprove:"授权", scanTypeCall:"调用",
+      scanHint:"在上方输入钱包地址并点击搜索，即可加载来自 Blockscout 的最新交易记录。",
+      scanLoading:"正在从 Blockscout 加载交易记录…",
+      scanEmpty:"未找到该地址的交易记录。",
+      scanInvalidAddress:"这看起来不是一个有效的钱包地址。",
+      scanErrorStatus:"无法连接 Scan API。",
+      scanErrorDetail:"数据加载失败。此窗口需要部署在配置了 /api/scan 的服务器上——本地打开文件时无法使用。",
       lockHint:"点击 / 轻触任意处解锁",
       hintText:"无论手机、平板还是电脑，这个界面看起来都一样",
       toastWallpaperChanged:"壁纸已更换", toastIconsTidy:"图标已经很整齐了。",
@@ -79,7 +105,13 @@
       termCmdNotFoundSuffix:" — 输入 help 查看帮助",
       neofetchOS:"系统", neofetchKernel:"内核", neofetchShell:"终端环境", neofetchWM:"窗口管理器",
       neofetchTerminal:"终端模拟器", neofetchTheme:"主题", neofetchCPU:"处理器",neofetchModel:"型号",
-      readmeContent:"# 0xbabyalien\n\n嘿！这是一个以 Linux 桌面为主题打造的个人主页。\n试着点击屏幕上的图标、打开终端，\n或者右键点击桌面来更换壁纸。\n\n## 关于\n- 专注于链上研究与智能合约探索\n- 折腾 Linux 环境配置（Hyprland、Catppuccin）\n- 打造一些小型 Web3 项目与工具\n\n## 联系方式\n- X / Twitter：@0xbabyalien\n- GitHub：github.com/0xbabyalien\n\n随意编辑这段文字，把它变成你自己的主页吧。"
+      readmeContent:"# 0xbabyalien\n\n嘿！这是一个以 Linux 桌面为主题打造的个人主页。\n试着点击屏幕上的图标、打开终端，\n或者右键点击桌面来更换壁纸。\n\n## 关于\n- 专注于链上研究与智能合约探索\n- 折腾 Linux 环境配置（Hyprland、Catppuccin）\n- 打造一些小型 Web3 项目与工具\n\n## 联系方式\n- X / Twitter：@0xbabyalien\n- GitHub：github.com/0xbabyalien\n\n随意编辑这段文字，把它变成你自己的主页吧。",
+      widgetBrowserTitle:"浏览器", widgetPortfolioTitle:"投资组合", widgetSettingsTitle:"设置", widgetNotesTitle:"便利贴",
+      widgetTotalValue:"总价值", widgetPlaceholderNote:"在此输入快速笔记...",
+      widgetLabelGrid:"桌面网格", widgetLabelVignette:"暗角效果", widgetLabelAnimations:"动画效果", widgetLabelGlass:"毛玻璃效果",
+      twitterMirrorLabel:"X 镜像", twitterEmbedLoading:"正在加载 X 时间线…",
+      twitterFallbackText:"无法在这里加载实时时间线。",
+      twitterFallbackBtn:"在 X 上打开", twitterFallbackRetry:"重试"
     }
   };
   let currentLang = 'en';
@@ -94,6 +126,9 @@
     });
     document.querySelectorAll('[data-i18n-title]').forEach(el=>{
       el.setAttribute('title', T(el.getAttribute('data-i18n-title')));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+      el.setAttribute('placeholder', T(el.getAttribute('data-i18n-placeholder')));
     });
   }
 
@@ -181,12 +216,21 @@
   function focusWindow(w){
     zTop++; w.style.zIndex = zTop;
   }
+  const WINDOW_CLOSE_MS = 180;
+
   function openWindow(id){
     const w = windows[id];
     if(!w) return;
+    clearTimeout(w._closeTimer);
     w.style.display = 'flex';
+    w.classList.remove('win-closing');
+    w.classList.remove('win-open');
     centerWindow(w);
     focusWindow(w);
+    // force a reflow so the browser registers the "closed" state before
+    // switching to "open" — otherwise the transition never plays.
+    void w.offsetWidth;
+    requestAnimationFrame(()=> w.classList.add('win-open'));
     const dockItem = document.querySelector('.dock-item[data-open="'+id+'"]');
     if(dockItem) dockItem.classList.add('running');
     if(id === 'terminal'){
@@ -199,6 +243,13 @@
     if(id === 'market'){
       startMarket();
     }
+    if(id === 'scan'){
+      const inp = document.getElementById('scan-address-input');
+      setTimeout(()=>{ if(inp) inp.focus(); }, 30);
+    }
+    if(id === 'twitter'){
+      loadTwitterEmbed();
+    }
   }
   function centerWindow(w){
     const width = w.offsetWidth;
@@ -209,7 +260,13 @@
     w.style.top = top + 'px';
   }
   function closeWindow(w){
-    w.style.display = 'none';
+    w.classList.remove('win-open');
+    w.classList.add('win-closing');
+    clearTimeout(w._closeTimer);
+    w._closeTimer = setTimeout(()=>{
+      w.style.display = 'none';
+      w.classList.remove('win-closing');
+    }, WINDOW_CLOSE_MS);
   }
 
   document.querySelectorAll('[data-open]').forEach(el=>{
@@ -536,6 +593,212 @@
   if(whaleRefreshBtn) whaleRefreshBtn.addEventListener('click', loadWhaleData);
 
 
+  /* ---------- SCAN (address lookup via Blockscout) ---------- */
+  const SCAN_ENDPOINT = '/api/scan';
+  const ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
+
+  function scanTxUrl(chain, hash){
+    // Best-effort explorer link; falls back to Etherscan-style path for unknown chains.
+    const explorers = {
+      eth:'https://etherscan.io/tx/', bsc:'https://bscscan.com/tx/',
+      matic:'https://polygonscan.com/tx/', arb:'https://arbiscan.io/tx/',
+      op:'https://optimistic.etherscan.io/tx/', avax:'https://snowtrace.io/tx/',
+      base:'https://basescan.org/tx/'
+    };
+    return (explorers[chain] || 'https://etherscan.io/tx/') + hash;
+  }
+
+  const SCAN_TYPE_KEYS = { send:'scanTypeSend', receive:'scanTypeReceive', create:'scanTypeCreate', approve:'scanTypeApprove', call:'scanTypeCall' };
+  function scanTypeLabel(type){
+    const key = SCAN_TYPE_KEYS[type];
+    return key ? T(key) : type;
+  }
+
+  let lastScanTransactions = null;
+
+  function renderScanRows(items){
+    const list = document.getElementById('scan-list');
+    if(!items || items.length === 0){
+      list.innerHTML = '<div class="scan-empty">'+T('scanEmpty')+'</div>';
+      return;
+    }
+    list.innerHTML = items.map(t => (
+      '<div class="scan-row">'
+        + '<a class="scan-hash" href="' + scanTxUrl(t.chain, t.hash) + '" target="_blank" rel="noopener">' + escHtml(t.hashShort) + '</a>'
+        + '<span class="scan-chain">' + escHtml((t.chain || '').toUpperCase()) + '</span>'
+        + '<span class="scan-type">' + escHtml(scanTypeLabel(t.type)) + '</span>'
+        + '<span class="scan-time">' + escHtml(t.time) + '</span>'
+      + '</div>'
+    )).join('');
+  }
+
+  async function loadScanData(address){
+    const list = document.getElementById('scan-list');
+    list.innerHTML = '<div class="scan-empty">'+T('scanLoading')+'</div>';
+    try{
+      const res = await fetch(SCAN_ENDPOINT + '?address=' + encodeURIComponent(address));
+      const data = await res.json();
+      if(!res.ok || data.error){
+        throw new Error(data.error || ('HTTP ' + res.status));
+      }
+      lastScanTransactions = data.transactions;
+      renderScanRows(data.transactions);
+    } catch(err){
+      lastScanTransactions = null;
+      list.innerHTML = '<div class="scan-empty">'+T('scanErrorDetail')+'</div>';
+    }
+  }
+
+  function runScanSearch(){
+    const input = document.getElementById('scan-address-input');
+    const address = (input.value || '').trim();
+    if(!ADDRESS_RE.test(address)){
+      document.getElementById('scan-list').innerHTML = '<div class="scan-empty">'+T('scanInvalidAddress')+'</div>';
+      return;
+    }
+    loadScanData(address);
+  }
+
+  const scanSearchBtn = document.getElementById('scan-search-btn');
+  const scanAddressInput = document.getElementById('scan-address-input');
+  if(scanSearchBtn) scanSearchBtn.addEventListener('click', runScanSearch);
+  if(scanAddressInput) scanAddressInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') runScanSearch(); });
+
+
+  /* ---------- TWITTER / X MIRROR ---------- */
+  const TWITTER_HANDLE = '0xbabyalien';
+  const TWITTER_FALLBACK_MS = 6000;
+  let twitterEmbedLoaded = false;
+
+  function showTwitterFallback(container){
+    container.innerHTML =
+      '<div class="twitter-fallback">'
+        + '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m-2.46 -2.46l6.768 -6.768"/></svg>'
+        + '<p>' + T('twitterFallbackText') + '</p>'
+        + '<a class="twitter-fallback-btn" href="https://twitter.com/' + TWITTER_HANDLE + '" target="_blank" rel="noopener">' + T('twitterFallbackBtn') + '</a>'
+        + '<button type="button" class="twitter-fallback-retry">' + T('twitterFallbackRetry') + '</button>'
+      + '</div>';
+    const retryBtn = container.querySelector('.twitter-fallback-retry');
+    if(retryBtn){
+      retryBtn.addEventListener('click', ()=>{
+        twitterEmbedLoaded = false;
+        container.innerHTML = '<div class="twitter-embed-loading">' + T('twitterEmbedLoading') + '</div>';
+        loadTwitterEmbed();
+      });
+    }
+  }
+
+  function loadTwitterEmbed(){
+    const container = document.getElementById('twitter-embed');
+    if(!container || twitterEmbedLoaded) return;
+    twitterEmbedLoaded = true;
+
+    container.innerHTML =
+      '<a class="twitter-timeline" data-theme="dark" data-chrome="noheader nofooter noborders transparent" ' +
+      'href="https://twitter.com/' + TWITTER_HANDLE + '?ref_src=twsrc%5Etfw">Tweets by @' + TWITTER_HANDLE + '</a>';
+
+    // If the widget script fails to load, is blocked (common in restricted
+    // in-app WebViews), or simply never turns the <a> tag into a rendered
+    // iframe within a few seconds, fall back to a plain "open on X" card
+    // instead of leaving the raw fallback link on screen.
+    const fallbackTimer = setTimeout(()=>{
+      if(!container.querySelector('iframe')){
+        showTwitterFallback(container);
+      }
+    }, TWITTER_FALLBACK_MS);
+
+    function renderTimeline(){
+      if(window.twttr && window.twttr.widgets){
+        window.twttr.widgets.load(container);
+      }
+    }
+
+    if(window.twttr && window.twttr.widgets){
+      clearTimeout(fallbackTimer);
+      renderTimeline();
+      setTimeout(()=>{ if(!container.querySelector('iframe')) showTwitterFallback(container); }, TWITTER_FALLBACK_MS);
+    } else {
+      const existing = document.getElementById('twitter-wjs');
+      if(existing){
+        existing.addEventListener('load', renderTimeline, { once:true });
+        existing.addEventListener('error', ()=> showTwitterFallback(container), { once:true });
+      } else {
+        const script = document.createElement('script');
+        script.id = 'twitter-wjs';
+        script.src = 'https://platform.twitter.com/widgets.js';
+        script.async = true;
+        script.charset = 'utf-8';
+        script.addEventListener('load', renderTimeline, { once:true });
+        script.addEventListener('error', ()=>{ clearTimeout(fallbackTimer); showTwitterFallback(container); }, { once:true });
+        document.body.appendChild(script);
+      }
+    }
+  }
+
+  /* ---------- FLOATING DRAGGABLE BUBBLE ---------- */
+  const bubble = document.getElementById('twitter-bubble');
+  if(bubble){
+    // Default position: bottom-right corner of the 1440x900 virtual desktop.
+    const BUBBLE_SIZE = 54;
+    const BUBBLE_MARGIN = 26;
+    bubble.style.left = (VW - BUBBLE_SIZE - BUBBLE_MARGIN) + 'px';
+    bubble.style.top = (VH - BUBBLE_SIZE - BUBBLE_MARGIN) + 'px';
+
+    let bDragging = false, bMoved = false;
+    let bsx = 0, bsy = 0, bl = 0, bt = 0;
+    const DRAG_THRESHOLD = 5;
+
+    function toggleTwitterWindow(){
+      const w = windows.twitter;
+      if(!w) return;
+      const isOpen = w.style.display !== 'none' && !w.classList.contains('win-closing');
+      if(isOpen){
+        closeWindow(w);
+      } else {
+        openWindow('twitter');
+      }
+    }
+
+    bubble.addEventListener('pointerdown', e=>{
+      bDragging = true; bMoved = false;
+      bubble.setPointerCapture(e.pointerId);
+      bsx = e.clientX; bsy = e.clientY;
+      bl = parseFloat(bubble.style.left) || 0;
+      bt = parseFloat(bubble.style.top) || 0;
+      bubble.classList.add('dragging');
+    });
+    bubble.addEventListener('pointermove', e=>{
+      if(!bDragging) return;
+      const dx = (e.clientX - bsx) / scale;
+      const dy = (e.clientY - bsy) / scale;
+      if(Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) bMoved = true;
+      if(!bMoved) return;
+      let nl = bl + dx, nt = bt + dy;
+      nl = Math.max(4, Math.min(nl, VW - BUBBLE_SIZE - 4));
+      nt = Math.max(40, Math.min(nt, VH - BUBBLE_SIZE - 4));
+      bubble.style.left = nl + 'px';
+      bubble.style.top = nt + 'px';
+    });
+    function endBubbleDrag(){
+      if(!bDragging) return;
+      bDragging = false;
+      bubble.classList.remove('dragging');
+    }
+    bubble.addEventListener('pointerup', endBubbleDrag);
+    bubble.addEventListener('pointercancel', endBubbleDrag);
+
+    bubble.addEventListener('click', ()=>{
+      // A drag ends with a click event right after — ignore that one so
+      // dragging the bubble never also toggles the window.
+      if(bMoved){ bMoved = false; return; }
+      toggleTwitterWindow();
+    });
+    bubble.addEventListener('keydown', e=>{
+      if(e.key === 'Enter') toggleTwitterWindow();
+    });
+  }
+
+
   /* ---------- MARKET ---------- */
   const MARKET_SYMBOLS = ['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT','XRPUSDT','DOGEUSDT','ADAUSDT','AVAXUSDT','LINKUSDT','TONUSDT'];
   const MARKET_POLL_MS = 15000;
@@ -669,8 +932,13 @@
     if(editorBody && !editorEdited){
       editorBody.textContent = T('readmeContent');
     }
+    const stickyNote = document.getElementById('sticky-note');
+    if(stickyNote) stickyNote.placeholder = T('widgetPlaceholderNote');
     if(windows.whale && windows.whale.style.display !== 'none'){
       loadWhaleData();
+    }
+    if(windows.scan && windows.scan.style.display !== 'none' && lastScanTransactions){
+      renderScanRows(lastScanTransactions);
     }
   }
 
