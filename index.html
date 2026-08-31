@@ -81,7 +81,111 @@
             <span data-i18n="trashLabel">Trash</span>
           </div>
         </div>
+        <!-- RIGHT-SIDE WIDGETS -->
+        <div id="widgets">
 
+          <!-- BROWSER WIDGET -->
+          <div class="widget" id="widget-browser">
+            <div class="widget-head">
+              <span class="widget-title">Apps</span>
+              <button class="widget-toggle" data-widget="browser">−</button>
+            </div>
+            <div class="widget-body" id="widget-browser-body">
+              <a class="widget-link" href="https://x.com/0xbabyalien" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m-2.46 -2.46l6.768 -6.768"/></svg>
+                <span>X / Twitter</span>
+              </a>
+              <a class="widget-link" href="https://github.com/0xbabyalien" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                <span>GitHub</span>
+              </a>
+              <a class="widget-link" href="#" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10"/><path d="M8 10l4-3 4 3"/></svg>
+                <span>Etherscan</span>
+              </a>
+              <a class="widget-link" href="#" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-6 4 3 4-5"/></svg>
+                <span>DexScreener</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- PORTFOLIO WIDGET -->
+          <div class="widget" id="widget-portfolio">
+            <div class="widget-head">
+              <span class="widget-title">Portfolio</span>
+              <button class="widget-toggle" data-widget="portfolio">−</button>
+            </div>
+            <div class="widget-body" id="widget-portfolio-body">
+              <div class="widget-row">
+                <span class="widget-coin">BTC</span>
+                <span class="widget-alloc">0%</span>
+                <div class="widget-bar"><div class="widget-fill" style="width:45%"></div></div>
+              </div>
+              <div class="widget-row">
+                <span class="widget-coin">ETH</span>
+                <span class="widget-alloc">0%</span>
+                <div class="widget-bar"><div class="widget-fill" style="width:30%"></div></div>
+              </div>
+              <div class="widget-row">
+                <span class="widget-coin">SOL</span>
+                <span class="widget-alloc">0%</span>
+                <div class="widget-bar"><div class="widget-fill" style="width:15%"></div></div>
+              </div>
+              <div class="widget-row">
+                <span class="widget-coin">USDC</span>
+                <span class="widget-alloc">0%</span>
+                <div class="widget-bar"><div class="widget-fill" style="width:10%"></div></div>
+              </div>
+              <div class="widget-total">
+                <span>Total Value</span>
+                <span class="widget-value">$0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SETTINGS WIDGET -->
+          <div class="widget" id="widget-settings">
+            <div class="widget-head">
+              <span class="widget-title">Settings</span>
+              <button class="widget-toggle" data-widget="settings">−</button>
+            </div>
+            <div class="widget-body" id="widget-settings-body">
+              <label class="widget-switch">
+                <input type="checkbox" id="toggle-grid" checked>
+                <span class="widget-slider"></span>
+                <span class="widget-label">Desktop Grid</span>
+              </label>
+              <label class="widget-switch">
+                <input type="checkbox" id="toggle-vignette" checked>
+                <span class="widget-slider"></span>
+                <span class="widget-label">Vignette</span>
+              </label>
+              <label class="widget-switch">
+                <input type="checkbox" id="toggle-animations" checked>
+                <span class="widget-slider"></span>
+                <span class="widget-label">Animations</span>
+              </label>
+              <label class="widget-switch">
+                <input type="checkbox" id="toggle-glass" checked>
+                <span class="widget-slider"></span>
+                <span class="widget-label">Glassmorphism</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- STICKY NOTES WIDGET -->
+          <div class="widget" id="widget-notes">
+            <div class="widget-head">
+              <span class="widget-title">Sticky Notes</span>
+              <button class="widget-toggle" data-widget="notes">-</button>
+            </div>
+            <div class="widget-body" id="widget-notes-body">
+              <textarea id="sticky-note" placeholder="Type a quick note here..."></textarea>
+            </div>
+          </div>
+
+        </div>
         <!-- WINDOWS LAYER -->
         <div id="windows-layer">
 
