@@ -1,162 +1,129 @@
+// /api/whale-radar.js
+//
+// Serverless function (Vercel-style: module.exports = async (req, res) => {...})
+// Scans the last N Ethereum mainnet blocks for large USDC / USDT transfers
+// using the Alchemy "alchemy_getAssetTransfers" API.
+//
+// Requires an environment variable ALCHEMY_API_KEY to be set on the
+// deployment (e.g. Vercel Project Settings -> Environment Variables).
+// Locally opening index.html as a file will NOT work — this only runs
+// server-side once deployed.
+
+const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
+
+// Well-known Ethereum mainnet stablecoin contracts.
 const TOKENS = {
-  USDC: {
-    address: "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-    decimals: 6
-  },
-  USDT: {
-    address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-    decimals: 6
-  }
+  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { symbol: 'USDC' },
+  '0xdac17f958d2ee523a2206206994597c13d831ec7': { symbol: 'USDT' }
 };
+const TOKEN_ADDRESSES = Object.keys(TOKENS);
 
-// keccak256("Transfer(address,address,uint256)")
-const TRANSFER_TOPIC =
-  "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a8df53b3ef";
+const BLOCKS_TO_SCAN = 10;   // "last 10 blocks", matches the UI copy
+const MIN_USD = 500000;      // minimum transfer size to be considered a "whale" move
+const MAX_RESULTS = 25;      // cap the list returned to the client
 
-function topicToAddress(topic) {
-  return "0x" + topic.slice(-40);
+function shortenAddress(addr) {
+  if (!addr || addr.length < 10) return addr || '';
+  return addr.slice(0, 6) + '…' + addr.slice(-4);
 }
 
-function shortAddress(address) {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+function formatUsd(value) {
+  const abs = Math.abs(value);
+  if (abs >= 1e9) return '$' + (value / 1e9).toFixed(2) + 'B';
+  if (abs >= 1e6) return '$' + (value / 1e6).toFixed(2) + 'M';
+  if (abs >= 1e3) return '$' + (value / 1e3).toFixed(1) + 'K';
+  return '$' + value.toFixed(0);
 }
 
-function formatUSD(value) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0
-  }).format(value);
+function formatAge(blockTimestampIso) {
+  const then = new Date(blockTimestampIso).getTime();
+  if (!isFinite(then)) return '—';
+  const diffSec = Math.max(0, Math.floor((Date.now() - then) / 1000));
+  if (diffSec < 60) return diffSec + 's';
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return diffMin + 'm';
+  const diffHr = Math.floor(diffMin / 60);
+  return diffHr + 'h';
 }
 
-function formatAmount(value) {
-  return new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 0
-  }).format(value);
-}
-
-function age(timestamp) {
-  const seconds = Math.max(0, Math.floor(Date.now() / 1000 - timestamp));
-  if (seconds < 60) return `${seconds}s ago`;
-
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-
-  const hours = Math.floor(minutes / 60);
-  return `${hours}h ago`;
-}
-
-async function rpcCall(rpc, method, params) {
-  const response = await fetch(rpc, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params })
+async function alchemyRpc(method, params) {
+  const url = 'https://eth-mainnet.g.alchemy.com/v2/' + ALCHEMY_API_KEY;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
   });
-
-  const data = await response.json();
-  if (data.error) throw new Error(data.error.message);
-  return data.result;
+  const json = await res.json();
+  if (json.error) {
+    throw new Error(json.error.message || 'Alchemy RPC error');
+  }
+  return json.result;
 }
 
-export default async function handler(req, res) {
-  res.setHeader("Cache-Control", "s-maxage=20, stale-while-revalidate=40");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-
-  const apiKey = process.env.ALCHEMY_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: "ALCHEMY_API_KEY is not configured." });
+module.exports = async (req, res) => {
+  // Basic CORS / method guard
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cache-Control', 'no-store');
+  if (req.method && req.method !== 'GET') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
   }
 
-  const minUsd = Math.max(100000, Number(req.query?.minUsd || 1000000));
-  const rpc = `https://eth-mainnet.g.alchemy.com/v2/${apiKey}`;
+  if (!ALCHEMY_API_KEY) {
+    res.status(500).json({ error: 'ALCHEMY_API_KEY is not configured on the server.' });
+    return;
+  }
 
   try {
-    const latestHex = await rpcCall(rpc, "eth_blockNumber", []);
+    // 1. Get latest block number, compute the scan window.
+    const latestHex = await alchemyRpc('eth_blockNumber', []);
     const latestBlock = parseInt(latestHex, 16);
+    const fromBlock = '0x' + Math.max(0, latestBlock - BLOCKS_TO_SCAN + 1).toString(16);
 
-    // Scan only the latest 10 blocks to keep the API lightweight.
-    const fromBlock = Math.max(0, latestBlock - 10);
-    const fromHex = "0x" + fromBlock.toString(16);
-    const toHex = "0x" + latestBlock.toString(16);
+    // 2. Pull ERC-20 transfers for USDC/USDT in that window.
+    const result = await alchemyRpc('alchemy_getAssetTransfers', [{
+      fromBlock,
+      toBlock: 'latest',
+      contractAddresses: TOKEN_ADDRESSES,
+      category: ['erc20'],
+      withMetadata: true,
+      excludeZeroValue: true,
+      order: 'desc',
+      maxCount: '0x3e8' // 1000
+    }]);
 
-    const transfers = [];
+    const rawTransfers = (result && result.transfers) || [];
 
-    for (const [symbol, token] of Object.entries(TOKENS)) {
-      const logs = await rpcCall(rpc, "eth_getLogs", [
-        {
-          address: token.address,
-          fromBlock: fromHex,
-          toBlock: toHex,
-          topics: [TRANSFER_TOPIC]
-        }
-      ]);
-
-      for (const log of logs || []) {
-        if (!log.topics || log.topics.length < 3) continue;
-
-        const rawAmount = BigInt(log.data);
-        const amount = Number(rawAmount) / Math.pow(10, token.decimals);
-
-        // USDC / USDT are approximately $1, so token amount ≈ USD value.
-        const valueUsd = amount;
-        if (valueUsd < minUsd) continue;
-
-        const from = topicToAddress(log.topics[1]);
-        const to = topicToAddress(log.topics[2]);
-
-        transfers.push({
-          symbol,
-          amount,
-          valueUsd,
-          amountFormatted: formatAmount(amount),
-          valueFormatted: formatUSD(valueUsd),
-          from,
-          to,
-          fromShort: shortAddress(from),
-          toShort: shortAddress(to),
-          txHash: log.transactionHash,
-          blockNumber: parseInt(log.blockNumber, 16)
-        });
-      }
-    }
-
-    // Resolve block timestamps.
-    const blockNumbers = [...new Set(transfers.map(item => item.blockNumber))];
-    const timestamps = new Map();
-
-    await Promise.all(
-      blockNumbers.map(async blockNumber => {
-        const block = await rpcCall(rpc, "eth_getBlockByNumber", [
-          "0x" + blockNumber.toString(16),
-          false
-        ]);
-        if (block?.timestamp) {
-          timestamps.set(blockNumber, parseInt(block.timestamp, 16));
-        }
+    // 3. Filter to whale-sized transfers, map to the shape the UI expects.
+    const transfers = rawTransfers
+      .map(t => {
+        const contract = (t.rawContract && t.rawContract.address || '').toLowerCase();
+        const meta = TOKENS[contract];
+        const value = typeof t.value === 'number' ? t.value : parseFloat(t.value);
+        if (!meta || !isFinite(value)) return null;
+        return {
+          symbol: meta.symbol,
+          valueUsd: value, // stablecoins ~= 1:1 USD
+          valueFormatted: formatUsd(value),
+          from: t.from,
+          to: t.to,
+          fromShort: shortenAddress(t.from),
+          toShort: shortenAddress(t.to),
+          age: formatAge(t.metadata && t.metadata.blockTimestamp)
+        };
       })
-    );
-
-    const result = transfers
-      .map(item => ({
-        ...item,
-        timestamp: timestamps.get(item.blockNumber) || Math.floor(Date.now() / 1000)
-      }))
+      .filter(t => t && t.valueUsd >= MIN_USD)
       .sort((a, b) => b.valueUsd - a.valueUsd)
-      .slice(0, 30)
-      .map(item => ({ ...item, age: age(item.timestamp) }));
+      .slice(0, MAX_RESULTS)
+      .map(({ valueUsd, ...rest }) => rest); // drop the raw numeric field before sending
 
-    return res.status(200).json({
-      chain: "Ethereum",
-      minUsd,
-      count: result.length,
+    res.status(200).json({
+      count: transfers.length,
+      minUsd: MIN_USD,
       updatedAt: new Date().toISOString(),
-      transfers: result
+      transfers
     });
-  } catch (error) {
-    console.error("Whale Radar:", error);
-    return res.status(500).json({
-      error: "Unable to read Ethereum whale activity.",
-      detail: error.message
-    });
+  } catch (err) {
+    res.status(502).json({ error: err.message || 'Failed to fetch whale transfer data.' });
   }
-}
+};
