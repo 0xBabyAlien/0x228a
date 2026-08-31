@@ -18,7 +18,7 @@
   html,body{
     margin:0;padding:0;height:100%;
     background:var(--mantle);
-    font-family:'JetBrains Mono',ui-monospace,Consolas,monospace;
+    font-family:'Ubuntu',ui-sans-serif,Arial,sans-serif;
     overflow:hidden;
     -webkit-tap-highlight-color:transparent;
   }
@@ -72,7 +72,9 @@
       linear-gradient(#8bd5ca 1px, transparent 1px),
       linear-gradient(90deg,#8bd5ca 1px, transparent 1px);
     background-size:48px 48px;
+    transition:opacity .3s ease;
   }
+  #wallpaper.no-grid::before{opacity:0;}
 
   /* ---------- TOPBAR ---------- */
   #topbar{
@@ -155,6 +157,18 @@
     box-shadow:0 25px 50px -12px #000000a0;
     display:flex;flex-direction:column;overflow:hidden;
     min-width:260px;min-height:160px;
+    opacity:0;
+    transform:scale(.94) translateY(10px);
+    transform-origin:center center;
+    transition:opacity .2s cubic-bezier(.4,0,.2,1), transform .2s cubic-bezier(.4,0,.2,1);
+  }
+  .window.win-open{
+    opacity:1;
+    transform:scale(1) translateY(0);
+  }
+  .window.win-closing{
+    opacity:0;
+    transform:scale(.96) translateY(6px);
   }
   .titlebar{
     height:32px;flex:0 0 auto;display:flex;align-items:center;gap:8px;
@@ -172,7 +186,7 @@
   .wbody::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:6px;}
 
   /* Terminal */
-  .term-body{padding:10px 12px;background:#0f1019;height:100%;display:flex;flex-direction:column;font-size:13px;line-height:1.5;}
+  .term-body{padding:10px 12px;background:#0f1019;height:100%;display:flex;flex-direction:column;font-size:13px;line-height:1.5;font-family:'Ubuntu Mono','Cascadia Code','JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;}
   .term-out{flex:1;overflow-y:auto;white-space:pre-wrap;color:var(--text);}
   .term-out .prompt{color:var(--green);}
   .term-out .path{color:var(--teal);}
@@ -323,6 +337,48 @@
   .whale-addrs a:hover{color:var(--teal);text-decoration:underline;}
   .whale-age{color:var(--subtext);}
   .whale-empty{padding:24px 14px;color:var(--subtext);text-align:center;}
+
+  /* Scan — namespaced, no clashes with other windows */
+  .scan-body{display:flex;flex-direction:column;height:100%;font-size:12px;}
+  .scan-head{
+    display:flex;align-items:center;gap:8px;padding:10px 14px;
+    border-bottom:1px solid #ffffff0f;flex:0 0 auto;
+  }
+  .scan-addr-input{
+    flex:1;background:#ffffff0a;border:1px solid #ffffff14;color:var(--text);
+    border-radius:6px;padding:7px 10px;font-family:inherit;font-size:12.5px;outline:none;
+  }
+  .scan-addr-input:focus{border-color:var(--mauve);}
+  .scan-addr-input::placeholder{color:var(--subtext);}
+  .scan-search-btn{
+    background:var(--mauve);border:none;color:#181925;
+    border-radius:6px;width:32px;height:32px;cursor:pointer;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .scan-search-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;}
+  .scan-search-btn:hover{opacity:.9;}
+  .scan-cols{
+    display:grid;grid-template-columns:1fr 70px 90px 70px;gap:8px;
+    padding:8px 14px;color:var(--subtext);font-size:10.5px;text-transform:uppercase;
+    letter-spacing:.4px;border-bottom:1px solid #ffffff0c;flex:0 0 auto;
+  }
+  .scan-list{flex:1;overflow-y:auto;}
+  .scan-row{
+    display:grid;grid-template-columns:1fr 70px 90px 70px;gap:8px;
+    padding:8px 14px;align-items:center;border-bottom:1px solid #ffffff08;
+  }
+  .scan-row:hover{background:#ffffff08;}
+  .scan-hash{
+    color:var(--teal);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:monospace;
+  }
+  .scan-hash:hover{text-decoration:underline;}
+  .scan-chain{
+    display:inline-block;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:700;
+    background:var(--surface2);color:var(--teal);width:fit-content;
+  }
+  .scan-type{color:var(--text);}
+  .scan-time{color:var(--subtext);}
+  .scan-empty{padding:24px 14px;color:var(--subtext);text-align:center;}
 
   /* Market — namespaced, no clashes with other windows */
   .market-body{display:flex;flex-direction:column;height:100%;font-size:12px;}
@@ -488,3 +544,54 @@ body.no-anim .widget-toggle{transition:none !important;}
 body.no-anim .widget{transition:none !important;}
 body.no-anim .dock-item{transition:none !important;}
 body.no-anim .widget-slider::after{transition:none !important;}
+
+/* crypto icon */
+.crypto-icon{
+  width:16px;height:16px;
+  border-radius:50%;
+  vertical-align:middle;
+  margin-right:4px;
+  flex:0 0 auto;
+}
+
+/* ---------- FLOATING TWITTER BUBBLE ---------- */
+#twitter-bubble{
+  position:absolute;
+  width:54px;height:54px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#12131cd9;backdrop-filter:blur(6px);
+  border:1px solid #ffffff1c;
+  box-shadow:0 10px 25px -6px #000000b0, 0 0 0 1px #ffffff08 inset;
+  cursor:grab;touch-action:none;user-select:none;
+  z-index:55;
+  transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+#twitter-bubble svg{width:24px;height:24px;stroke:var(--text);fill:none;pointer-events:none;}
+#twitter-bubble:hover{background:#1a1c29d9;transform:scale(1.06);box-shadow:0 14px 30px -6px #000000c0;}
+#twitter-bubble:active,
+#twitter-bubble.dragging{cursor:grabbing;transform:scale(1.1);}
+#twitter-bubble:focus-visible{outline:2px solid var(--mauve);outline-offset:2px;}
+
+/* Twitter Mirror window */
+.twitter-body{height:100%;padding:8px;overflow:auto;}
+.twitter-embed-wrap{min-height:100%;}
+.twitter-embed-loading{
+  padding:20px 10px;text-align:center;font-size:12px;color:var(--subtext);
+}
+.twitter-fallback{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:10px;padding:34px 20px;color:var(--subtext);
+}
+.twitter-fallback svg{width:30px;height:30px;stroke:var(--text);fill:none;opacity:.7;}
+.twitter-fallback p{margin:0;font-size:12.5px;line-height:1.5;max-width:260px;}
+.twitter-fallback-btn{
+  display:inline-block;margin-top:2px;padding:8px 16px;border-radius:8px;
+  background:var(--mauve);color:#181925;font-weight:600;font-size:12px;
+  text-decoration:none;transition:opacity .12s ease;
+}
+.twitter-fallback-btn:hover{opacity:.88;}
+.twitter-fallback-retry{
+  background:none;border:none;color:var(--teal);font-family:inherit;
+  font-size:11.5px;cursor:pointer;padding:2px 4px;text-decoration:underline;
+}
+.twitter-fallback-retry:hover{color:var(--text);}
