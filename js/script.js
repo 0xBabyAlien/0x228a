@@ -681,4 +681,62 @@
     btn.addEventListener('click', ()=> ctx.classList.remove('show'));
   });
 
+  /* ---------- DESKTOP WIDGETS ---------- */
+  document.querySelectorAll('.widget-toggle').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation();
+      const widget = btn.closest('.widget');
+      widget.classList.toggle('collapsed');
+      btn.textContent = widget.classList.contains('collapsed') ? '+' : '−';
+    });
+  });
+  document.querySelectorAll('.widget-head').forEach(head=>{
+    head.addEventListener('click', e=>{
+      if(e.target.closest('.widget-toggle')) return;
+      const widget = head.closest('.widget');
+      const btn = head.querySelector('.widget-toggle');
+      widget.classList.toggle('collapsed');
+      if(btn) btn.textContent = widget.classList.contains('collapsed') ? '+' : '−';
+    });
+  });
+
+  /* Settings toggles */
+  const toggleGrid = document.getElementById('toggle-grid');
+  const toggleVignette = document.getElementById('toggle-vignette');
+  const toggleAnimations = document.getElementById('toggle-animations');
+  const toggleGlass = document.getElementById('toggle-glass');
+
+  if(toggleGrid){
+    toggleGrid.addEventListener('change', ()=>{
+      document.getElementById('wallpaper').classList.toggle('no-grid', !toggleGrid.checked);
+    });
+  }
+  if(toggleVignette){
+    toggleVignette.addEventListener('change', ()=>{
+      document.getElementById('vignette').style.opacity = toggleVignette.checked ? '1' : '0';
+    });
+  }
+  if(toggleAnimations){
+    toggleAnimations.addEventListener('change', ()=>{
+      document.body.classList.toggle('no-anim', !toggleAnimations.checked);
+    });
+  }
+  if(toggleGlass){
+    toggleGlass.addEventListener('change', ()=>{
+      document.querySelectorAll('#topbar, #dock, .widget').forEach(el=>{
+        el.style.backdropFilter = toggleGlass.checked ? 'blur(6px)' : 'none';
+      });
+    });
+  }
+
+  /* Sticky note localStorage */
+  const stickyNote = document.getElementById('sticky-note');
+  if(stickyNote){
+    const saved = localStorage.getItem('bbalien_sticky_note');
+    if(saved) stickyNote.value = saved;
+    stickyNote.addEventListener('input', ()=>{
+      localStorage.setItem('bbalien_sticky_note', stickyNote.value);
+    });
+  }
+  
 })();
