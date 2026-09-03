@@ -412,28 +412,111 @@ own profile page.</div>
             </div>
           </div>
 
-          <!-- TWITTER MIRROR -->
-          <div class="window" id="win-twitter" style="left:260px;top:60px;width:420px;height:560px;display:none;">
-            <div class="titlebar" data-win="twitter">
+          <!-- LINK3 MIRROR (styled as a smartphone) -->
+          <div class="window phone-frame" id="win-mirror" style="left:260px;top:60px;width:300px;height:620px;display:none;">
+            <div class="titlebar" data-win="mirror">
               <button class="tbtn close" data-act="close"></button>
               <button class="tbtn min" data-act="min"></button>
               <button class="tbtn max" data-act="max"></button>
-              <div class="wtitle" data-i18n="twitterMirrorLabel">X Mirror</div>
+              <div class="phone-notch"></div>
+              <div class="wtitle" data-i18n="mirrorLabel">Link3 Mirror</div>
             </div>
             <div class="wbody">
-              <div class="twitter-body">
-                <div class="twitter-embed-wrap" id="twitter-embed">
-                  <div class="twitter-embed-loading" data-i18n="twitterEmbedLoading">Loading X timeline…</div>
+              <div class="mirror-body">
+                <div class="mirror-embed-wrap" id="mirror-embed">
+                  <iframe class="mirror-screen" src="https://link3.to/0xbabyalien"></iframe>
                 </div>
+              </div>
+              <div class="phone-home-bar"></div>
+            </div>
+          </div>
+
+          <!-- @ WINDOW (placeholder, content TBD) -->
+          <div class="window" id="win-at" style="left:300px;top:90px;width:360px;height:280px;display:none;">
+            <div class="titlebar" data-win="at">
+              <button class="tbtn close" data-act="close"></button>
+              <button class="tbtn min" data-act="min"></button>
+              <button class="tbtn max" data-act="max"></button>
+              <div class="wtitle" data-i18n="atLabel">@</div>
+            </div>
+            <div class="wbody">
+              <div class="placeholder-body">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="4"/>
+                  <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/>
+                </svg>
+                <p data-i18n="atEmptyText">Content coming soon.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- * WINDOW (placeholder, content TBD) -->
+          <div class="window" id="win-star" style="left:340px;top:130px;width:360px;height:280px;display:none;">
+            <div class="titlebar" data-win="star">
+              <button class="tbtn close" data-act="close"></button>
+              <button class="tbtn min" data-act="min"></button>
+              <button class="tbtn max" data-act="max"></button>
+              <div class="wtitle" data-i18n="starLabel">*</div>
+            </div>
+            <div class="wbody">
+              <div class="placeholder-body">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 4L12 20"/>
+                  <path d="M5.1 8L18.9 16"/>
+                  <path d="M18.9 8L5.1 16"/>
+                </svg>
+                <p data-i18n="starEmptyText">Content coming soon.</p>
               </div>
             </div>
           </div>
 
         </div>
+        
+        <!-- FLOATING # BUBBLE (Link3 Mirror) -->
+        <div id="mirror-bubble" class="fab-bubble" tabindex="0" title="Link3 Mirror" data-i18n-title="mirrorLabel">
+         <svg viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 3L8 21"/>
+            <path d="M16 3L14 21"/>
+            <path d="M4 9H19"/>
+            <path d="M3 15H18"/>
+        </svg>
+        </div>
 
-        <!-- FLOATING TWITTER BUBBLE -->
-        <div id="twitter-bubble" tabindex="0" title="X / Twitter" data-i18n-title="twitterMirrorLabel">
-          <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m-2.46 -2.46l6.768 -6.768"/></svg>
+        <!-- FLOATING @ BUBBLE (left of #) -->
+        <div id="at-bubble" class="fab-bubble" tabindex="0" title="@" data-i18n-title="atLabel">
+         <svg viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/>
+        </svg>
+        </div>
+
+        <!-- FLOATING * BUBBLE (above #) -->
+        <div id="star-bubble" class="fab-bubble" tabindex="0" title="*" data-i18n-title="starLabel">
+         <svg viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4L12 20"/>
+            <path d="M5.1 8L18.9 16"/>
+            <path d="M18.9 8L5.1 16"/>
+        </svg>
         </div>
 
         <!-- DOCK -->
@@ -500,4 +583,4 @@ own profile page.</div>
 <script src="js/script.js?v=2"></script>
 <script type="module" src="js/main.js"></script>
 </body>
-                  </html>
+              </html>
