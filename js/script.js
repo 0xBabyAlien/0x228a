@@ -54,9 +54,9 @@
       widgetBrowserTitle:"Browser", widgetPortfolioTitle:"Portfolio", widgetSettingsTitle:"Settings", widgetNotesTitle:"Sticky Notes",
       widgetTotalValue:"Total Value", widgetPlaceholderNote:"Type a quick note here...",
       widgetLabelGrid:"Desktop Grid", widgetLabelVignette:"Vignette", widgetLabelAnimations:"Animations", widgetLabelGlass:"Glassmorphism",
-      twitterMirrorLabel:"X Mirror", twitterEmbedLoading:"Loading X timeline…",
-      twitterFallbackText:"Couldn't load the live timeline here.",
-      twitterFallbackBtn:"Open on X", twitterFallbackRetry:"Try again"
+      mirrorLabel:"Link3 Mirror",
+      atLabel:"@", atEmptyText:"Content coming soon.",
+      starLabel:"*", starEmptyText:"Content coming soon."
     },
     zh: {
       wifi:"Wi-Fi", volume:"音量", battery:"电池", powerMenu:"电源菜单",
@@ -109,9 +109,9 @@
       widgetBrowserTitle:"浏览器", widgetPortfolioTitle:"投资组合", widgetSettingsTitle:"设置", widgetNotesTitle:"便利贴",
       widgetTotalValue:"总价值", widgetPlaceholderNote:"在此输入快速笔记...",
       widgetLabelGrid:"桌面网格", widgetLabelVignette:"暗角效果", widgetLabelAnimations:"动画效果", widgetLabelGlass:"毛玻璃效果",
-      twitterMirrorLabel:"X 镜像", twitterEmbedLoading:"正在加载 X 时间线…",
-      twitterFallbackText:"无法在这里加载实时时间线。",
-      twitterFallbackBtn:"在 X 上打开", twitterFallbackRetry:"重试"
+      mirrorLabel:"Link3 镜像",
+      atLabel:"@", atEmptyText:"内容即将上线。",
+      starLabel:"*", starEmptyText:"内容即将上线。"
     }
   };
   let currentLang = 'en';
@@ -246,9 +246,6 @@
     if(id === 'scan'){
       const inp = document.getElementById('scan-address-input');
       setTimeout(()=>{ if(inp) inp.focus(); }, 30);
-    }
-    if(id === 'twitter'){
-      loadTwitterEmbed();
     }
   }
   function centerWindow(w){
@@ -665,97 +662,30 @@
   if(scanAddressInput) scanAddressInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') runScanSearch(); });
 
 
-  /* ---------- TWITTER / X MIRROR ---------- */
-  const TWITTER_HANDLE = '0xbabyalien';
-  const TWITTER_FALLBACK_MS = 6000;
-  let twitterEmbedLoaded = false;
+  /* ---------- FLOATING DRAGGABLE BUBBLES (#, @, *) ---------- */
+  const BUBBLE_SIZE = 54;
+  const BUBBLE_MARGIN = 26;
+  const BUBBLE_GAP = 16;
 
-  function showTwitterFallback(container){
-    container.innerHTML =
-      '<div class="twitter-fallback">'
-        + '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m-2.46 -2.46l6.768 -6.768"/></svg>'
-        + '<p>' + T('twitterFallbackText') + '</p>'
-        + '<a class="twitter-fallback-btn" href="https://twitter.com/' + TWITTER_HANDLE + '" target="_blank" rel="noopener">' + T('twitterFallbackBtn') + '</a>'
-        + '<button type="button" class="twitter-fallback-retry">' + T('twitterFallbackRetry') + '</button>'
-      + '</div>';
-    const retryBtn = container.querySelector('.twitter-fallback-retry');
-    if(retryBtn){
-      retryBtn.addEventListener('click', ()=>{
-        twitterEmbedLoaded = false;
-        container.innerHTML = '<div class="twitter-embed-loading">' + T('twitterEmbedLoading') + '</div>';
-        loadTwitterEmbed();
-      });
-    }
-  }
+  function initBubble(bubbleId, windowKey, defaultLeft, defaultTop){
+    const bubble = document.getElementById(bubbleId);
+    if(!bubble) return;
 
-  function loadTwitterEmbed(){
-    const container = document.getElementById('twitter-embed');
-    if(!container || twitterEmbedLoaded) return;
-    twitterEmbedLoaded = true;
-
-    container.innerHTML =
-      '<a class="twitter-timeline" data-theme="dark" data-chrome="noheader nofooter noborders transparent" ' +
-      'href="https://twitter.com/' + TWITTER_HANDLE + '?ref_src=twsrc%5Etfw">Tweets by @' + TWITTER_HANDLE + '</a>';
-
-    // If the widget script fails to load, is blocked (common in restricted
-    // in-app WebViews), or simply never turns the <a> tag into a rendered
-    // iframe within a few seconds, fall back to a plain "open on X" card
-    // instead of leaving the raw fallback link on screen.
-    const fallbackTimer = setTimeout(()=>{
-      if(!container.querySelector('iframe')){
-        showTwitterFallback(container);
-      }
-    }, TWITTER_FALLBACK_MS);
-
-    function renderTimeline(){
-      if(window.twttr && window.twttr.widgets){
-        window.twttr.widgets.load(container);
-      }
-    }
-
-    if(window.twttr && window.twttr.widgets){
-      clearTimeout(fallbackTimer);
-      renderTimeline();
-      setTimeout(()=>{ if(!container.querySelector('iframe')) showTwitterFallback(container); }, TWITTER_FALLBACK_MS);
-    } else {
-      const existing = document.getElementById('twitter-wjs');
-      if(existing){
-        existing.addEventListener('load', renderTimeline, { once:true });
-        existing.addEventListener('error', ()=> showTwitterFallback(container), { once:true });
-      } else {
-        const script = document.createElement('script');
-        script.id = 'twitter-wjs';
-        script.src = 'https://platform.twitter.com/widgets.js';
-        script.async = true;
-        script.charset = 'utf-8';
-        script.addEventListener('load', renderTimeline, { once:true });
-        script.addEventListener('error', ()=>{ clearTimeout(fallbackTimer); showTwitterFallback(container); }, { once:true });
-        document.body.appendChild(script);
-      }
-    }
-  }
-
-  /* ---------- FLOATING DRAGGABLE BUBBLE ---------- */
-  const bubble = document.getElementById('twitter-bubble');
-  if(bubble){
-    // Default position: bottom-right corner of the 1440x900 virtual desktop.
-    const BUBBLE_SIZE = 54;
-    const BUBBLE_MARGIN = 26;
-    bubble.style.left = (VW - BUBBLE_SIZE - BUBBLE_MARGIN) + 'px';
-    bubble.style.top = (VH - BUBBLE_SIZE - BUBBLE_MARGIN) + 'px';
+    bubble.style.left = defaultLeft + 'px';
+    bubble.style.top = defaultTop + 'px';
 
     let bDragging = false, bMoved = false;
     let bsx = 0, bsy = 0, bl = 0, bt = 0;
     const DRAG_THRESHOLD = 5;
 
-    function toggleTwitterWindow(){
-      const w = windows.twitter;
+    function toggleBubbleWindow(){
+      const w = windows[windowKey];
       if(!w) return;
       const isOpen = w.style.display !== 'none' && !w.classList.contains('win-closing');
       if(isOpen){
         closeWindow(w);
       } else {
-        openWindow('twitter');
+        openWindow(windowKey);
       }
     }
 
@@ -791,12 +721,21 @@
       // A drag ends with a click event right after — ignore that one so
       // dragging the bubble never also toggles the window.
       if(bMoved){ bMoved = false; return; }
-      toggleTwitterWindow();
+      toggleBubbleWindow();
     });
     bubble.addEventListener('keydown', e=>{
-      if(e.key === 'Enter') toggleTwitterWindow();
+      if(e.key === 'Enter') toggleBubbleWindow();
     });
   }
+
+  // Default cluster position: bottom-right corner of the 1440x900 virtual desktop.
+  // # sits in the corner, @ sits to its left, * sits above it.
+  const mirrorBubbleLeft = VW - BUBBLE_SIZE - BUBBLE_MARGIN;
+  const mirrorBubbleTop = VH - BUBBLE_SIZE - BUBBLE_MARGIN;
+
+  initBubble('mirror-bubble', 'mirror', mirrorBubbleLeft, mirrorBubbleTop);
+  initBubble('at-bubble', 'at', mirrorBubbleLeft - BUBBLE_SIZE - BUBBLE_GAP, mirrorBubbleTop);
+  initBubble('star-bubble', 'star', mirrorBubbleLeft, mirrorBubbleTop - BUBBLE_SIZE - BUBBLE_GAP);
 
 
   /* ---------- MARKET ---------- */
