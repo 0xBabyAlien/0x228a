@@ -19,6 +19,7 @@
       aboutTheme:"Theme", aboutResolution:"Resolution", aboutUptime:"Uptime",
       marketColCoin:"Coin", marketColPrice:"Price", marketColChange:"24h %", marketColVol:"24h Vol",
       marketLoading:"Loading market data…", marketError:"Unable to load market data.",
+      marketSourceLabel:"Data source: Chart via {chart} · List via {list}",
       whaleScanning:"Scanning Ethereum mainnet for large USDC / USDT transfers…",
       whaleRefresh:"Refresh now",
       whaleColToken:"Token", whaleColValue:"Value", whaleColFromTo:"From → To", whaleColAge:"Age",
@@ -74,6 +75,7 @@
       aboutTheme:"主题", aboutResolution:"分辨率", aboutUptime:"运行时间",
       marketColCoin:"币种", marketColPrice:"价格", marketColChange:"24小时涨跌", marketColVol:"24小时成交量",
       marketLoading:"正在加载行情数据…", marketError:"无法加载行情数据。",
+      marketSourceLabel:"数据来源：图表 {chart} · 列表 {list}",
       whaleScanning:"正在扫描以太坊主网上的大额 USDC / USDT 转账…",
       whaleRefresh:"立即刷新",
       whaleColToken:"代币", whaleColValue:"金额", whaleColFromTo:"从 → 到", whaleColAge:"时间",
@@ -758,6 +760,169 @@
     return n.toFixed(0);
   }
 
+  /* ---- Market data sources: Binance is tried first, then OKX, then
+     Hyperliquid. Binance's public API is geo-blocked in some regions
+     (HTTP 451), so this fallback chain keeps the Market window working
+     for visitors from those regions. ---- */
+  const MARKET_TF_MS = { '15m': 15*60*1000, '1h': 60*60*1000, '4h': 4*60*60*1000, '1d': 24*60*60*1000 };
+  function toBaseCoin(symbol){ return symbol.replace('USDT',''); }
+  function toOkxInstId(symbol){ return toBaseCoin(symbol) + '-USDT'; }
+  function toOkxBar(tf){ return { '15m':'15m', '1h':'1H', '4h':'4H', '1d':'1D' }[tf] || tf; }
+
+  async function fetchCandlesBinance(symbol, tf){
+    const res = await fetch('https://api.binance.com/api/v3/klines?symbol='+symbol+'&interval='+tf+'&limit=200');
+    if(!res.ok) throw new Error('Binance HTTP '+res.status);
+    const data = await res.json();
+    if(!Array.isArray(data)) throw new Error('Unexpected Binance candle response');
+    return data.map(k => ({
+      time: Math.floor(k[0]/1000), open: parseFloat(k[1]), high: parseFloat(k[2]),
+      low: parseFloat(k[3]), close: parseFloat(k[4])
+    }));
+  }
+
+  async function fetchCandlesOkx(symbol, tf){
+    const url = 'https://www.okx.com/api/v5/market/candles?instId='+toOkxInstId(symbol)+'&bar='+toOkxBar(tf)+'&limit=200';
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('OKX HTTP '+res.status);
+    const json = await res.json();
+    if(!json || json.code !== '0' || !Array.isArray(json.data)) throw new Error('Unexpected OKX candle response');
+    // OKX returns candles newest-first; reverse to chronological order.
+    return json.data.slice().reverse().map(k => ({
+      time: Math.floor(Number(k[0])/1000), open: parseFloat(k[1]), high: parseFloat(k[2]),
+      low: parseFloat(k[3]), close: parseFloat(k[4])
+    }));
+  }
+
+  async function fetchCandlesHyperliquid(symbol, tf){
+    const coin = toBaseCoin(symbol);
+    const intervalMs = MARKET_TF_MS[tf] || MARKET_TF_MS['1h'];
+    const endTime = Date.now();
+    const startTime = endTime - intervalMs * 200;
+    const res = await fetch('https://api.hyperliquid.xyz/info', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'candleSnapshot', req: { coin, interval: tf, startTime, endTime } })
+    });
+    if(!res.ok) throw new Error('Hyperliquid HTTP '+res.status);
+    const data = await res.json();
+    if(!Array.isArray(data) || !data.length) throw new Error('Unexpected Hyperliquid candle response');
+    return data.map(k => ({
+      time: Math.floor(k.t/1000), open: parseFloat(k.o), high: parseFloat(k.h),
+      low: parseFloat(k.l), close: parseFloat(k.c)
+    }));
+  }
+
+  const MARKET_CANDLE_SOURCES = [
+    { name: 'Binance', fn: fetchCandlesBinance },
+    { name: 'OKX', fn: fetchCandlesOkx },
+    { name: 'Hyperliquid', fn: fetchCandlesHyperliquid }
+  ];
+
+  let marketChartSourceName = '—';
+
+  async function fetchCandlesWithFallback(symbol, tf){
+    let lastErr;
+    for(const source of MARKET_CANDLE_SOURCES){
+      try{
+        const candles = await source.fn(symbol, tf);
+        marketChartSourceName = source.name;
+        return candles;
+      } catch(err){
+        lastErr = err;
+        console.warn('[Market] candle source failed, trying next:', err.message);
+      }
+    }
+    throw lastErr;
+  }
+
+  async function fetchTickersBinance(symbols){
+    const results = await Promise.all(symbols.map(sym =>
+      fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+sym).then(r => {
+        if(!r.ok) throw new Error('Binance HTTP '+r.status);
+        return r.json();
+      })
+    ));
+    return results.map(t => ({
+      symbol: t.symbol,
+      lastPrice: parseFloat(t.lastPrice),
+      changePercent: parseFloat(t.priceChangePercent),
+      quoteVolume: parseFloat(t.quoteVolume)
+    }));
+  }
+
+  async function fetchTickersOkx(symbols){
+    const responses = await Promise.all(symbols.map(sym =>
+      fetch('https://www.okx.com/api/v5/market/ticker?instId='+toOkxInstId(sym)).then(r => {
+        if(!r.ok) throw new Error('OKX HTTP '+r.status);
+        return r.json();
+      })
+    ));
+    const results = responses.map((json, i) => {
+      const t = json && json.data && json.data[0];
+      if(!t) return null;
+      const last = parseFloat(t.last);
+      const open24h = parseFloat(t.open24h);
+      const changePercent = open24h ? ((last - open24h) / open24h) * 100 : 0;
+      return { symbol: symbols[i], lastPrice: last, changePercent, quoteVolume: parseFloat(t.volCcy24h) };
+    }).filter(Boolean);
+    if(!results.length) throw new Error('No usable OKX ticker data');
+    return results;
+  }
+
+  async function fetchTickersHyperliquid(symbols){
+    const res = await fetch('https://api.hyperliquid.xyz/info', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'metaAndAssetCtxs' })
+    });
+    if(!res.ok) throw new Error('Hyperliquid HTTP '+res.status);
+    const [meta, ctxs] = await res.json();
+    const universe = (meta && meta.universe) || [];
+    const results = symbols.map(sym => {
+      const coin = toBaseCoin(sym);
+      const idx = universe.findIndex(u => u.name === coin);
+      if(idx === -1 || !ctxs[idx]) return null;
+      const ctx = ctxs[idx];
+      const last = parseFloat(ctx.markPx);
+      const prevDay = parseFloat(ctx.prevDayPx);
+      const changePercent = prevDay ? ((last - prevDay) / prevDay) * 100 : 0;
+      return { symbol: sym, lastPrice: last, changePercent, quoteVolume: parseFloat(ctx.dayNtlVlm) };
+    }).filter(Boolean);
+    if(!results.length) throw new Error('No matching coins found on Hyperliquid');
+    return results;
+  }
+
+  const MARKET_TICKER_SOURCES = [
+    { name: 'Binance', fn: fetchTickersBinance },
+    { name: 'OKX', fn: fetchTickersOkx },
+    { name: 'Hyperliquid', fn: fetchTickersHyperliquid }
+  ];
+
+  let marketListSourceName = '—';
+
+  async function fetchTickersWithFallback(symbols){
+    let lastErr;
+    for(const source of MARKET_TICKER_SOURCES){
+      try{
+        const results = await source.fn(symbols);
+        marketListSourceName = source.name;
+        return results;
+      } catch(err){
+        lastErr = err;
+        console.warn('[Market] ticker source failed, trying next:', err.message);
+      }
+    }
+    throw lastErr;
+  }
+
+  function renderMarketSource(){
+    const el = document.getElementById('market-source');
+    if(!el) return;
+    el.textContent = T('marketSourceLabel')
+      .replace('{chart}', marketChartSourceName)
+      .replace('{list}', marketListSourceName);
+  }
+
   function initMarketChart(){
     const el = document.getElementById('market-chart');
     if(!el || marketChart || typeof LightweightCharts === 'undefined') return;
@@ -777,16 +942,10 @@
   async function loadMarketCandles(symbol, tf){
     if(!marketSeries) return;
     try{
-      const res = await fetch('https://api.binance.com/api/v3/klines?symbol='+symbol+'&interval='+tf+'&limit=200');
-      const data = await res.json();
-      if(!Array.isArray(data)) throw new Error('Unexpected candle response');
-      const candles = data.map(k => ({
-        time: Math.floor(k[0] / 1000),
-        open: parseFloat(k[1]), high: parseFloat(k[2]),
-        low: parseFloat(k[3]), close: parseFloat(k[4])
-      }));
+      const candles = await fetchCandlesWithFallback(symbol, tf);
       marketSeries.setData(candles);
       marketChart.timeScale().fitContent();
+      renderMarketSource();
     } catch(err){
       console.error('Market chart error:', err);
     }
@@ -795,12 +954,11 @@
   async function loadMarketList(){
     const list = document.getElementById('market-list');
     try{
-      const results = await Promise.all(MARKET_SYMBOLS.map(sym =>
-        fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+sym).then(r => r.json())
-      ));
+      const results = await fetchTickersWithFallback(MARKET_SYMBOLS);
+      renderMarketSource();
       list.innerHTML = results.map(t => {
         const base = t.symbol.replace('USDT','');
-        const change = parseFloat(t.priceChangePercent);
+        const change = t.changePercent;
         const dir = change >= 0 ? 'up' : 'down';
         const arrow = change >= 0 ? '▲' : '▼';
         const active = t.symbol === marketActiveSymbol ? ' active' : '';
@@ -868,6 +1026,7 @@
     });
     updateClock();
     renderExchanges();
+    renderMarketSource();
     if(editorBody && !editorEdited){
       editorBody.textContent = T('readmeContent');
     }
