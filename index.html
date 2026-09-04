@@ -80,6 +80,10 @@
             <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/><path d="M10.5 7.5v3l2.2 2.2"/></svg>
             <span data-i18n="scanLabel">Scan</span>
           </div>
+          <div class="icon" tabindex="0" data-open="meme">
+            <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 15c1 1.2 2.2 1.8 3.5 1.8s2.5-.6 3.5-1.8"/><path d="M8.5 9.5h.01M15.5 9.5h.01"/></svg>
+            <span data-i18n="memeLabel">Meme</span>
+          </div>
           <div class="icon" tabindex="0" data-action="trash">
             <svg viewBox="0 0 24 24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg>
             <span data-i18n="trashLabel">Trash</span>
@@ -413,6 +417,45 @@ own profile page.</div>
             </div>
           </div>
 
+          <!-- MEME -->
+          <div class="window" id="win-meme" style="left:230px;top:60px;width:700px;height:580px;display:none;">
+            <div class="titlebar" data-win="meme">
+              <button class="tbtn close" data-act="close"></button>
+              <button class="tbtn min" data-act="min"></button>
+              <button class="tbtn max" data-act="max"></button>
+              <div class="wtitle" data-i18n="memeLabel">Meme</div>
+            </div>
+            <div class="wbody">
+              <div class="meme-body">
+                <div class="meme-chart-wrap">
+                  <div class="meme-chain-tabs">
+                    <button data-chain="ethereum" class="active"><img data-coin="ETH" data-theme="white" alt="ETH" class="crypto-icon">Ethereum</button>
+                    <button data-chain="bsc"><img data-coin="BNB" data-theme="white" alt="BNB" class="crypto-icon">BSC</button>
+                    <button data-chain="robinhood">Robinhood</button>
+                    <button data-chain="base">Base</button>
+                    <button data-chain="ton">TON</button>
+                    <button data-chain="sui">Sui</button>
+                    <button data-chain="sei">Sei</button>
+                    <button data-chain="tron"><img data-coin="TRX" data-theme="white" alt="TRX" class="crypto-icon">Tron</button>
+                  </div>
+                  <div class="meme-chart-head">
+                    <span id="meme-symbol">—</span>
+                  </div>
+                  <iframe id="meme-chart-frame" class="meme-chart-frame" loading="lazy"></iframe>
+                  <div id="meme-source" class="meme-source"></div>
+                </div>
+                <div class="meme-list-wrap">
+                  <div class="meme-cols">
+                    <span data-i18n="memeColToken">Token</span><span data-i18n="memeColPrice">Price</span><span data-i18n="memeColChange">24h %</span><span data-i18n="memeColVol">24h Vol</span>
+                  </div>
+                  <div id="meme-list" class="meme-list">
+                    <div class="meme-loading" data-i18n="memeLoading">Loading meme tokens…</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- LINK3 MIRROR (styled as a smartphone) -->
           <div class="window phone-frame" id="win-mirror" style="left:260px;top:60px;width:300px;height:620px;display:none;">
             <div class="titlebar" data-win="mirror">
@@ -546,6 +589,9 @@ own profile page.</div>
           <div class="dock-item" data-open="scan" title="Scan" data-i18n-title="scanLabel">
             <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/><path d="M10.5 7.5v3l2.2 2.2"/></svg>
           </div>
+          <div class="dock-item" data-open="meme" title="Meme" data-i18n-title="memeLabel">
+            <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 15c1 1.2 2.2 1.8 3.5 1.8s2.5-.6 3.5-1.8"/><path d="M8.5 9.5h.01M15.5 9.5h.01"/></svg>
+          </div>
           <div class="dock-item" id="dock-lock" title="Lock screen" data-i18n-title="lockScreenLabel">
             <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
           </div>
@@ -584,4 +630,4 @@ own profile page.</div>
 <script src="js/script.js?v=2"></script>
 <script type="module" src="js/main.js"></script>
 </body>
-</html>
+                      </html>
