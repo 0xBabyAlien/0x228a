@@ -399,6 +399,10 @@
   .market-tf button:hover{background:#ffffff1a;color:var(--text);}
   .market-tf button.active{background:var(--mauve);color:#181925;border-color:transparent;font-weight:600;}
   #market-chart{flex:1;min-height:120px;}
+  .market-source{
+    flex-shrink:0;padding:4px 2px 0;font-size:10.5px;color:var(--subtext);
+    opacity:.75;text-align:right;
+  }
   .market-list-wrap{flex:1 1 40%;display:flex;flex-direction:column;overflow:hidden;min-height:130px;}
   .market-cols{
     display:grid;grid-template-columns:1fr 90px 70px 90px;gap:8px;
@@ -623,4 +627,4 @@ body.no-anim .widget-slider::after{transition:none !important;}
   position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
   width:100px;height:4px;border-radius:2px;
   background:#ffffff70;pointer-events:none;z-index:2;
-}
+                       }
