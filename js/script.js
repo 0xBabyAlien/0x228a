@@ -37,6 +37,11 @@
       scanInvalidAddress:"That doesn't look like a valid wallet address.",
       scanErrorStatus:"Unable to reach the Scan API.",
       scanErrorDetail:"Could not load data. This window needs the site deployed with /api/scan — it will not work when the file is opened locally.",
+      memeLabel:"Meme",
+      memeColToken:"Token", memeColPrice:"Price", memeColChange:"24h %", memeColVol:"24h Vol",
+      memeLoading:"Loading meme tokens…", memeEmpty:"No meme tokens found on this network right now.",
+      memeError:"Unable to load meme token data.",
+      memeSourceLabel:"Source: DexScreener (ranked by 24h volume)",
       lockHint:"click / tap anywhere to unlock",
       hintText:"this view looks identical on every device — phone, tablet, or PC",
       toastWallpaperChanged:"Wallpaper changed", toastIconsTidy:"Icons are already tidy.",
@@ -93,6 +98,11 @@
       scanInvalidAddress:"这看起来不是一个有效的钱包地址。",
       scanErrorStatus:"无法连接 Scan API。",
       scanErrorDetail:"数据加载失败。此窗口需要部署在配置了 /api/scan 的服务器上——本地打开文件时无法使用。",
+      memeLabel:"Meme",
+      memeColToken:"代币", memeColPrice:"价格", memeColChange:"24小时涨跌", memeColVol:"24小时成交量",
+      memeLoading:"正在加载 Meme 代币…", memeEmpty:"该网络暂时没有找到 Meme 代币。",
+      memeError:"无法加载 Meme 代币数据。",
+      memeSourceLabel:"数据来源：DexScreener（按24小时成交量排序）",
       lockHint:"点击 / 轻触任意处解锁",
       hintText:"无论手机、平板还是电脑，这个界面看起来都一样",
       toastWallpaperChanged:"壁纸已更换", toastIconsTidy:"图标已经很整齐了。",
@@ -248,6 +258,9 @@
     if(id === 'scan'){
       const inp = document.getElementById('scan-address-input');
       setTimeout(()=>{ if(inp) inp.focus(); }, 30);
+    }
+    if(id === 'meme'){
+      startMeme();
     }
   }
   function centerWindow(w){
@@ -1010,6 +1023,131 @@
   });
 
 
+  /* ---- MEME ----
+     Data source: DexScreener's free public API (no key required) — reverted
+     back to this after the Binance Meme Rush endpoint proved unreliable
+     (likely CORS-blocked or otherwise unreachable from a plain browser).
+     DexScreener doesn't expose a direct "top by volume" listing endpoint on
+     its free tier, so this discovers a wide candidate pool first (currently
+     boosted/promoted tokens, the only free "what's active right now" feed
+     DexScreener offers) and then — the actual fix for the original request —
+     ranks and cuts that pool by real 24h volume instead of just keeping
+     DexScreener's boost order. So the *candidates* come from boosts, but the
+     *ranking/filtering* you see is purely volume-based. */
+  const MEME_POLL_MS = 20000;
+  let memeActiveChain = 'ethereum';
+  let memeActiveToken = null;
+  let memeStarted = false, memePollTimer = null;
+
+  function memeChartUrl(chainId, pairAddress){
+    return 'https://dexscreener.com/'+chainId+'/'+pairAddress+'?embed=1&theme=dark&trades=0&info=0';
+  }
+
+  function setMemeChart(token){
+    memeActiveToken = token;
+    const frame = document.getElementById('meme-chart-frame');
+    const symbol = document.getElementById('meme-symbol');
+    if(frame) frame.src = memeChartUrl(token.chainId, token.pairAddress);
+    if(symbol) symbol.textContent = (token.baseToken && token.baseToken.symbol) || '—';
+  }
+
+  async function fetchMemeTokenList(chainId){
+    const boostRes = await fetch('https://api.dexscreener.com/token-boosts/top/v1');
+    if(!boostRes.ok) throw new Error('DexScreener HTTP '+boostRes.status);
+    const boosts = await boostRes.json();
+    // Cast a wider net than before (40 candidates instead of 15) so there's
+    // an actual pool to rank by volume from, instead of just taking whatever
+    // order DexScreener's boost feed happens to return.
+    const onChain = (Array.isArray(boosts) ? boosts : [])
+      .filter(b => b && b.chainId === chainId && b.tokenAddress)
+      .slice(0, 40);
+    if(!onChain.length) return [];
+
+    const addresses = onChain.map(b => b.tokenAddress).join(',');
+    const pairRes = await fetch('https://api.dexscreener.com/tokens/v1/'+chainId+'/'+encodeURIComponent(addresses));
+    if(!pairRes.ok) throw new Error('DexScreener HTTP '+pairRes.status);
+    const pairs = await pairRes.json();
+    if(!Array.isArray(pairs)) throw new Error('Unexpected DexScreener token response');
+
+    // A token can have several pairs (different DEXes/pools); keep only the
+    // highest-liquidity pair per base token address.
+    const byToken = new Map();
+    pairs.forEach(p => {
+      if(!p || !p.baseToken || !p.pairAddress) return;
+      const addr = p.baseToken.address;
+      const liq = (p.liquidity && p.liquidity.usd) || 0;
+      const prev = byToken.get(addr);
+      if(!prev || liq > prev._liq) byToken.set(addr, Object.assign({ _liq: liq }, p));
+    });
+
+    // The actual "top volume" filter: sort the whole candidate pool by 24h
+    // volume, descending, and only keep the top 15.
+    return Array.from(byToken.values())
+      .sort((a, b) => ((b.volume && b.volume.h24) || 0) - ((a.volume && a.volume.h24) || 0))
+      .slice(0, 15);
+  }
+
+  async function loadMemeList(chainId){
+    const list = document.getElementById('meme-list');
+    if(!list) return;
+    try{
+      const tokens = await fetchMemeTokenList(chainId);
+      if(!tokens.length){
+        list.innerHTML = '<div class="meme-loading">'+T('memeEmpty')+'</div>';
+        return;
+      }
+      list.innerHTML = tokens.map((t, i) => {
+        const change = parseFloat(t.priceChange && t.priceChange.h24) || 0;
+        const dir = change >= 0 ? 'up' : 'down';
+        const arrow = change >= 0 ? '▲' : '▼';
+        const active = memeActiveToken && memeActiveToken.pairAddress === t.pairAddress ? ' active' : '';
+        return '<div class="meme-row'+active+'" data-idx="'+i+'">'
+          + '<span class="meme-coin">'+(t.baseToken.symbol || '?')+'</span>'
+          + '<span class="meme-price">$'+formatMarketPrice(t.priceUsd)+'</span>'
+          + '<span class="meme-change '+dir+'">'+arrow+' '+Math.abs(change).toFixed(2)+'%</span>'
+          + '<span class="meme-vol">$'+formatMarketVol(t.volume && t.volume.h24)+'</span>'
+          + '</div>';
+      }).join('');
+      list.querySelectorAll('.meme-row').forEach(row => {
+        row.addEventListener('click', () => {
+          const token = tokens[parseInt(row.getAttribute('data-idx'), 10)];
+          list.querySelectorAll('.meme-row').forEach(r => r.classList.remove('active'));
+          row.classList.add('active');
+          setMemeChart(token);
+        });
+      });
+      const sourceEl = document.getElementById('meme-source');
+      if(sourceEl) sourceEl.textContent = T('memeSourceLabel');
+      // Auto-pick the top token whenever the chain tab changes (or on first load).
+      if(!memeActiveToken || memeActiveToken.chainId !== chainId){
+        setMemeChart(tokens[0]);
+        const firstRow = list.querySelector('.meme-row');
+        if(firstRow) firstRow.classList.add('active');
+      }
+    } catch(err){
+      console.error('Meme list error:', err);
+      list.innerHTML = '<div class="meme-loading">'+T('memeError')+'</div>';
+    }
+  }
+
+  function startMeme(){
+    loadMemeList(memeActiveChain);
+    if(memeStarted) return;
+    memeStarted = true;
+    memePollTimer = setInterval(() => loadMemeList(memeActiveChain), MEME_POLL_MS);
+  }
+
+  document.querySelectorAll('.meme-chain-tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.meme-chain-tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      memeActiveChain = btn.getAttribute('data-chain');
+      memeActiveToken = null;
+      loadMemeList(memeActiveChain);
+    });
+  });
+
+
   /* ---------- LANGUAGE SWITCHING ---------- */
   const editorBody = document.getElementById('editor-body');
   let editorEdited = false;
@@ -1027,6 +1165,8 @@
     updateClock();
     renderExchanges();
     renderMarketSource();
+    const memeSourceEl = document.getElementById('meme-source');
+    if(memeSourceEl && memeSourceEl.textContent) memeSourceEl.textContent = T('memeSourceLabel');
     if(editorBody && !editorEdited){
       editorBody.textContent = T('readmeContent');
     }
