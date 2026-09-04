@@ -424,6 +424,52 @@
   .market-vol{color:var(--subtext);}
   .market-loading{padding:24px 14px;color:var(--subtext);text-align:center;}
 
+  /* Meme — namespaced, mirrors Market's layout but with chain tabs + an embedded chart iframe */
+  .meme-body{display:flex;flex-direction:column;height:100%;font-size:12px;}
+  .meme-chart-wrap{
+    flex:1 1 60%;display:flex;flex-direction:column;
+    border-bottom:1px solid #ffffff0f;min-height:220px;
+  }
+  .meme-chain-tabs{
+    display:flex;gap:4px;padding:8px 14px 6px;flex:0 0 auto;
+    overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;
+  }
+  .meme-chain-tabs::-webkit-scrollbar{height:4px;}
+  .meme-chain-tabs::-webkit-scrollbar-thumb{background:#ffffff26;border-radius:4px;}
+  .meme-chain-tabs button{
+    background:#ffffff0c;border:1px solid #ffffff14;color:var(--subtext);
+    border-radius:5px;padding:4px 10px;font-size:10.5px;font-family:inherit;cursor:pointer;
+    flex:0 0 auto;white-space:nowrap;
+  }
+  .meme-chain-tabs button:hover{background:#ffffff1a;color:var(--text);}
+  .meme-chain-tabs button.active{background:var(--mauve);color:#181925;border-color:transparent;font-weight:600;}
+  .meme-chart-head{padding:6px 14px 0;color:var(--text);font-size:12.5px;flex:0 0 auto;}
+  #meme-symbol{font-weight:600;letter-spacing:.3px;}
+  .meme-chart-frame{flex:1;min-height:140px;width:100%;border:0;background:#0b0c14;}
+  .meme-source{
+    flex-shrink:0;padding:4px 14px 6px;font-size:10.5px;color:var(--subtext);
+    opacity:.75;text-align:right;
+  }
+  .meme-list-wrap{flex:1 1 40%;display:flex;flex-direction:column;overflow:hidden;min-height:130px;}
+  .meme-cols{
+    display:grid;grid-template-columns:1fr 90px 70px 90px;gap:8px;
+    padding:8px 14px;color:var(--subtext);font-size:10.5px;text-transform:uppercase;
+    letter-spacing:.4px;border-bottom:1px solid #ffffff0c;flex:0 0 auto;
+  }
+  .meme-list{flex:1;overflow-y:auto;}
+  .meme-row{
+    display:grid;grid-template-columns:1fr 90px 70px 90px;gap:8px;
+    padding:8px 14px;align-items:center;border-bottom:1px solid #ffffff08;cursor:pointer;
+  }
+  .meme-row:hover{background:#ffffff08;}
+  .meme-row.active{background:#ffffff10;}
+  .meme-coin{color:var(--text);font-weight:600;}
+  .meme-price{color:var(--text);}
+  .meme-change.up{color:var(--green);}
+  .meme-change.down{color:var(--red);}
+  .meme-vol{color:var(--subtext);}
+  .meme-loading{padding:24px 14px;color:var(--subtext);text-align:center;}
+
 a {
   color: #ff0000; /* Changes link color */
   text-decoration: none; /* Removes underline */
@@ -627,4 +673,4 @@ body.no-anim .widget-slider::after{transition:none !important;}
   position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
   width:100px;height:4px;border-radius:2px;
   background:#ffffff70;pointer-events:none;z-index:2;
-                       }
+        }
