@@ -11,6 +11,7 @@
       whaleLabel:"Whale Radar", marketLabel:"Market", trashLabel:"Trash",
       editorLabel:"Editor", aboutLabel:"About", lockScreenLabel:"Lock screen",
       projectsLabel:"Projects", wallpapersLabel:"Wallpapers",
+      readmeFileLabel:"Readme.md", contactFileLabel:"Contact.txt",
       editorTitle:"Readme.md — Editor",
       editorToolbar:"The text below can be edited directly (changes are not saved after refresh)",
       aboutTitle:"About This PC",
@@ -42,8 +43,8 @@
       memeLoading:"Loading meme tokens…", memeEmpty:"No meme tokens found on this network right now.",
       memeError:"Unable to load meme token data.",
       memeSourceLabel:"Source: DexScreener (ranked by 24h volume)",
-      lockHint:"click / tap anywhere to unlock",
-      hintText:"this view looks identical on every device — phone, tablet, or PC",
+      lockHint:"click / tap anywhere to unlock🔓",
+      hintText:"this view looks identical on every device — 📱phone, 💻tablet, or 🖥PC",
       toastWallpaperChanged:"Wallpaper changed", toastIconsTidy:"Icons are already tidy.",
       toastEmptyForNow:"Empty for now.", toastTrashEmpty:"Trash is empty.",
       exchangeOpenTitle:(name)=> "Open "+name,
@@ -61,8 +62,12 @@
       widgetTotalValue:"Total Value", widgetPlaceholderNote:"Type a quick note here...",
       widgetLabelGrid:"Desktop Grid", widgetLabelVignette:"Vignette", widgetLabelAnimations:"Animations", widgetLabelGlass:"Glassmorphism",
       mirrorLabel:"Link3 Mirror",
-      atLabel:"@", atEmptyText:"Content coming soon.",
-      starLabel:"*", starEmptyText:"Content coming soon."
+      atLabel:"💼",atLoading:"Loading capabilities…",atRefresh:"Refresh now",
+      atEmpty:"No capabilities returned by the API.",
+      atErrorStatus:"Unable to reach the Action Contracts API.",
+      atErrorDetail:"Could not load data. This window needs the site deployed with /api/action-contracts — it will not work when the file is opened locally.",
+      atStatusTemplate:(count,time)=> count+' capabilit'+(count===1?'y':'ies')+' available · updated '+time,
+      gameLabel:"Game"
     },
     zh: {
       wifi:"Wi-Fi", volume:"音量", battery:"电池", powerMenu:"电源菜单",
@@ -72,7 +77,8 @@
       whaleLabel:"巨鲸雷达", marketLabel:"行情", trashLabel:"回收站",
       editorLabel:"编辑器", aboutLabel:"关于", lockScreenLabel:"锁屏",
       projectsLabel:"项目", wallpapersLabel:"壁纸",
-      editorTitle:"Readme.md — 编辑器",
+      readmeFileLabel:"自述.md", contactFileLabel:"联系方式.txt",
+      editorTitle:"自述.md — 编辑器",
       editorToolbar:"下方文字可直接编辑（刷新后更改不会保存）",
       aboutTitle:"关于本机",
       aboutHost:"主机", aboutKernel:"内核", aboutShell:"终端环境", aboutWM:"窗口管理器",
@@ -103,7 +109,7 @@
       memeLoading:"正在加载 Meme 代币…", memeEmpty:"该网络暂时没有找到 Meme 代币。",
       memeError:"无法加载 Meme 代币数据。",
       memeSourceLabel:"数据来源：DexScreener（按24小时成交量排序）",
-      lockHint:"点击 / 轻触任意处解锁",
+      lockHint:"点击 / 轻触任意处解锁🔓",
       hintText:"无论手机、平板还是电脑，这个界面看起来都一样",
       toastWallpaperChanged:"壁纸已更换", toastIconsTidy:"图标已经很整齐了。",
       toastEmptyForNow:"暂时是空的。", toastTrashEmpty:"回收站是空的。",
@@ -122,8 +128,11 @@
       widgetTotalValue:"总价值", widgetPlaceholderNote:"在此输入快速笔记...",
       widgetLabelGrid:"桌面网格", widgetLabelVignette:"暗角效果", widgetLabelAnimations:"动画效果", widgetLabelGlass:"毛玻璃效果",
       mirrorLabel:"Link3 镜像",
-      atLabel:"@", atEmptyText:"内容即将上线。",
-      starLabel:"*", starEmptyText:"内容即将上线。"
+      atLabel:"💼", atLoading:"正在加载能力列表…", atRefresh:"立即刷新",
+      atEmpty:"API 未返回任何能力项。", atErrorStatus:"无法连接 Action Contracts API。",
+      atErrorDetail:"数据加载失败。此窗口需要部署在配置了 /api/action-contracts 的服务器上——本地打开文件时无法使用。",
+      atStatusTemplate:(count,time)=> count+' 项能力可用 · 更新于 '+time,
+      gameLabel:"游戏"
     }
   };
   let currentLang = 'en';
@@ -262,6 +271,9 @@
     if(id === 'meme'){
       startMeme();
     }
+    if(id === 'at'){
+      startAt();
+    }
   }
   function centerWindow(w){
     const width = w.offsetWidth;
@@ -382,7 +394,7 @@
         line(T('termAboutText'));
         break;
       case 'ls':
-        line('<span class="path">About.txt</span>  <span class="path">Contact.txt</span>  <span class="path">Projects/</span>  <span class="path">Readme.md</span>  <span class="path">Wallpapers/</span>');
+        line('<span class="path">About.txt</span>  <span class="path">'+T('contactFileLabel')+'</span>  <span class="path">Projects/</span>  <span class="path">'+T('readmeFileLabel')+'</span>  <span class="path">Wallpapers/</span>');
         break;
       case 'date':
         line(new Date().toString());
@@ -604,7 +616,81 @@
   const whaleRefreshBtn = document.getElementById('whale-refresh');
   if(whaleRefreshBtn) whaleRefreshBtn.addEventListener('click', loadWhaleData);
 
+  /* ---------- ACTION CONTRACTS (capabilities) ---------- */
+const AT_ENDPOINT = '/api/action-contracts';
+let atStarted = false;
 
+function pickFirstArray(...candidates){
+  for(const c of candidates){ if(Array.isArray(c)) return c; }
+  return null;
+}
+
+function extractCapabilities(payload){
+  const raw = payload && payload.raw;
+  if(Array.isArray(raw)) return raw;
+  if(!raw || typeof raw !== 'object') return [];
+  return pickFirstArray(raw.capabilities, raw.data, raw.items, raw.results, raw.actions) || [];
+}
+
+function capField(item, keys, fallback){
+  for(const k of keys){
+    if(item && item[k] !== undefined && item[k] !== null && item[k] !== '') return item[k];
+  }
+  return fallback;
+}
+
+function renderAtCapabilities(payload){
+  const list = document.getElementById('at-list');
+  const items = extractCapabilities(payload);
+  if(!items.length){
+    list.innerHTML = '<div class="at-empty">'+T('atEmpty')+'</div>';
+    return;
+  }
+  list.innerHTML = items.map(item=>{
+    const title = escHtml(capField(item, ['name','title','id','slug'], 'Untitled capability'));
+    const desc = escHtml(capField(item, ['description','summary','desc'], ''));
+    const category = capField(item, ['category','type','group'], null);
+    const tags = Array.isArray(item.tags) ? item.tags : [];
+    const metaTags = [category, ...tags].filter(Boolean);
+    return (
+      '<div class="at-card">'
+        + '<div class="at-card-title">' + title + '</div>'
+        + (desc ? '<div class="at-card-desc">' + desc + '</div>' : '')
+        + (metaTags.length ? '<div class="at-card-meta">' + metaTags.map(t=>'<span class="at-tag">'+escHtml(t)+'</span>').join('') + '</div>' : '')
+      + '</div>'
+    );
+  }).join('');
+}
+
+async function loadAtCapabilities(){
+  const dot = document.getElementById('at-dot');
+  const status = document.getElementById('at-status');
+  status.textContent = T('atLoading');
+  dot.classList.remove('error');
+  try{
+    const res = await fetch(AT_ENDPOINT);
+    const data = await res.json();
+    if(!res.ok || data.error){ throw new Error(data.error || ('HTTP ' + res.status)); }
+    const items = extractCapabilities(data);
+    status.textContent = T('atStatusTemplate')(items.length, new Date(data.updatedAt).toLocaleTimeString());
+    renderAtCapabilities(data);
+  } catch(err){
+    dot.classList.add('error');
+    status.textContent = T('atErrorStatus');
+    document.getElementById('at-list').innerHTML = '<div class="at-empty">'+T('atErrorDetail')+'</div>';
+  }
+}
+
+function startAt(){
+  if(atStarted){ loadAtCapabilities(); return; }
+  atStarted = true;
+  loadAtCapabilities();
+}
+
+const atRefreshBtn = document.getElementById('at-refresh');
+if(atRefreshBtn) atRefreshBtn.addEventListener('click', loadAtCapabilities);
+
+  
   /* ---------- SCAN (address lookup via Blockscout) ---------- */
   const SCAN_ENDPOINT = '/api/scan';
   const ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
