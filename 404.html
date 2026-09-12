@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>404 — Not Found</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/error.css?v=1">
+<link rel="icon" href="img/favicon.ico">
+</head>
+<body>
+
+<div id="stage">
+  <div id="monitor">
+    <div id="screen-wrap">
+      <div id="desktop">
+        <div id="wallpaper"></div>
+
+        <div class="window win-open err-window">
+          <div class="titlebar">
+            <a href="/"><button class="tbtn close"></button></a>
+            <button class="tbtn min"></button>
+            <button class="tbtn max"></button>
+            <div class="wtitle">error@BBalien: ~</div>
+          </div>
+          <div class="wbody err-body">
+            <span class="glitch-wrap" id="glitchWrap">
+              <span class="glitch" id="glitchText" data-text="404☠️">404!?</span>
+              <span class="noise-overlay"></span>
+            </span>
+            <p class="err-msg">The page you're looking for could not be found.<br>It may have been moved or never existed.</p>
+            <a class="err-btn" href="/">Back to Home</a>
+          </div>
+        </div>
+
+        <div id="screen-noise"></div>
+        <canvas id="tv-static" width="160" height="100"></canvas>
+        <svg class="crack-svg" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="holeGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#000" stop-opacity="0.95"/>
+              <stop offset="70%" stop-color="#000" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <g stroke="#ffffff" stroke-opacity="0.45" stroke-width="1.6" fill="none" stroke-linecap="round">
+            <path d="M860 300 L790 240 L760 180"/>
+            <path d="M860 300 L940 250 L1000 200 L1040 150"/>
+            <path d="M860 300 L920 340 L1010 360 L1090 340"/>
+            <path d="M860 300 L800 360 L740 420 L700 500"/>
+            <path d="M860 300 L830 380 L790 470"/>
+            <path d="M860 300 L900 400 L880 480 L910 560"/>
+            <path d="M860 300 L950 340 L980 420"/>
+            <path d="M860 300 L760 280 L680 260 L600 230"/>
+            <path d="M520 650 L470 610 L440 560"/>
+            <path d="M520 650 L570 630 L620 600"/>
+            <path d="M520 650 L500 710 L480 770"/>
+            <path d="M520 650 L560 700 L610 730"/>
+          </g>
+          <circle cx="860" cy="300" r="13" fill="url(#holeGrad)"/>
+          <circle cx="520" cy="650" r="8" fill="url(#holeGrad)"/>
+        </svg>
+        <div id="vignette"></div>
+      </div>
+    </div>
+  </div>
+  <div id="hint">this view looks identical on every device — 📱phone, 💻tablet, or 🖥PC</div>
+</div>
+
+<script src="js/error.js?v=1"></script>
+
+</body>
+</html>
