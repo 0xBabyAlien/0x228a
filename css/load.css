@@ -1,0 +1,63 @@
+/* ================= BOOT LOADER (desktop screen only) ================= */
+#boot-loader{
+  position:absolute;
+  inset:0;
+  z-index:10000; /* above #vignette (9999) */
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+  background:var(--mantle);
+  color:var(--text);
+  font-family:'Ubuntu Mono','Cascadia Code','JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  transition:opacity .5s ease, visibility .5s ease;
+}
+#boot-loader.boot-hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+.boot-logo{
+  width:60px;height:60px;
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--mauve),var(--teal));
+  box-shadow:0 0 40px -8px #c6a0f688;
+  animation:boot-pulse 1.8s ease-in-out infinite;
+}
+.boot-logo svg{width:30px;height:30px;stroke:#181925;fill:none;stroke-width:1.8;}
+
+@keyframes boot-pulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 28px -8px #c6a0f677;}
+  50%{transform:scale(1.06);box-shadow:0 0 44px -6px #8bd5ca99;}
+}
+
+.boot-title{
+  font-family:'Ubuntu',ui-sans-serif,Arial,sans-serif;
+  font-size:15px;font-weight:700;letter-spacing:.5px;color:var(--text);
+}
+.boot-title span{color:var(--mauve);}
+
+.boot-bar{
+  width:220px;height:4px;border-radius:3px;
+  background:#ffffff12;overflow:hidden;
+}
+.boot-bar-fill{
+  height:100%;width:0%;border-radius:3px;
+  background:linear-gradient(90deg,var(--mauve),var(--teal));
+  transition:width .25s ease;
+}
+
+.boot-log{
+  min-height:16px;
+  font-size:11px;color:var(--subtext);
+  letter-spacing:.2px;
+}
+.boot-log .cursor{
+  display:inline-block;width:6px;height:11px;margin-left:2px;
+  background:var(--teal);animation:boot-blink 1s step-end infinite;
+  transform:translateY(1px);
+}
+@keyframes boot-blink{50%{opacity:0;}}
