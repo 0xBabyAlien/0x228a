@@ -110,7 +110,7 @@
       memeError:"无法加载 Meme 代币数据。",
       memeSourceLabel:"数据来源：DexScreener（按24小时成交量排序）",
       lockHint:"点击 / 轻触任意处解锁🔓",
-      hintText:"无论手机、平板还是电脑，这个界面看起来都一样",
+      hintText:"此界面在每种设备上都长得一样 —— 📱手机、💻平板或🖥电脑",
       toastWallpaperChanged:"壁纸已更换", toastIconsTidy:"图标已经很整齐了。",
       toastEmptyForNow:"暂时是空的。", toastTrashEmpty:"回收站是空的。",
       exchangeOpenTitle:(name)=> "打开 "+name,
