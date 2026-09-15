@@ -27,6 +27,18 @@ Welcome to the official repository for **0xBabyAlien**! This is an interactive w
 
 ---
 
+## 🖼️ Asset Sources
+
+| Asset | Source |
+|---|---|
+| `img/0xbabyalien.jpeg`, `img/c0d.jpg`, `img/favicon.ico` | Original/local — created for this project |
+| `img/icon/{black,white,color}/*.svg` | [cryptocurrency-icons](https://github.com/atomiclabs/cryptocurrency-icons) (CC0-1.0) |
+| (`img.shields.io/badge/...`) | [Shields.io](https://shields.io) — icons rendered via [Simple Icons](https://simpleicons.org) |
+| `js/script.js` | Hotlinked from `assets.coingecko.com` (not stored in repo) |
+| `img/228a.jpg`, `img/android-chrome-192x192.png` | Unused / not referenced in code |
+
+---
+
 ## 📁 Directory Structure
 
 <pre>
@@ -50,11 +62,9 @@ Welcome to the official repository for **0xBabyAlien**! This is an interactive w
 └── img/                   # Image assets
     └── 0xbabyalien.jpeg
 </pre>
+
+---
+
 [![Live Demo](https://img.shields.io/badge/Demo-Live_Preview-4A3B32?style=plastic&logo=googlechrome&logoColor=yellow)](https://0xbabyalien.vercel.app)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy_Me_A_Coffee-Give_Coffee-6F4E37?style=plastic&logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/0xbabyalien)
 [![Ko-Fi](https://img.shields.io/badge/Ko_Fi-Buy_a_Coffee-6F4E37?style=plastic&logo=ko-fi&logoColor=white)](https://ko-fi.com/0xbabyalien)
-
-
-
-
-
