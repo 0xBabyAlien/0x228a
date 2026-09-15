@@ -7,9 +7,9 @@
 ![NodeJS](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
 <br>
-[![X Follow](https://img.shields.io/badge/Twitter-0xbabyalien-ff0000?style=plastic&logo=x&logoColor=white)](https://x.com/0xbabyalien) 
-[![GitHub Follow](https://img.shields.io/badge/Github-0xbabyalien-00ff00?style=plastic&logo=github&logoColor=white)](https://github.com/0xbabyalien)
-[![Link3 Visit](https://img.shields.io/badge/Link3-0xbabyalien-0000ff?style=plastic&logo=thurgauerkantonalbank&logoColor=white)](https://link3.to/0xbabyalien)
+[![X Follow](https://img.shields.io/badge/Twitter-0xbabyalien-4A3B32?style=plastic&logo=x&logoColor=white)](https://x.com/0xbabyalien) 
+[![GitHub Follow](https://img.shields.io/badge/Github-0xbabyalien-4A3B32?style=plastic&logo=github&logoColor=white)](https://github.com/0xbabyalien)
+[![Link3 Visit](https://img.shields.io/badge/Link3-0xbabyalien-4A3B32?style=plastic&logo=thurgauerkantonalbank&logoColor=white)](https://link3.to/0xbabyalien)
 
 Welcome to the official repository for **0xBabyAlien**! This is an interactive web platform featuring crypto whale tracking, a community leaderboard, scanner utilities, and interactive mini-games (Asteroids & LinkMe).
 
